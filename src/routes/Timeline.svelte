@@ -1,62 +1,70 @@
 <script>
-  let events = [
-    { year: 1969, name: "Moon Landing", description: "Apollo 11 lands on the moon" },
-    { year: 1969, name: "Woodstock", description: "Famous music festival held in New York" },
-    { year: 1989, name: "Fall of the Berlin Wall", description: "The Berlin Wall is torn down" },
-    { year: 1989, name: "First GPS Satellite", description: "First GPS satellite put into orbit" },
-    { year: 2001, name: "Wikipedia Founded", description: "The free online encyclopedia is launched" },
-    { year: 2001, name: "iPod Released", description: "Apple releases the first iPod" },
-    // Add more events as needed
-  ];
+	let events = [
+		{ year: 1969, name: "Moon Landing", description: "Apollo 11 lands on the moon" },
+		{ year: 1969, name: "Woodstock", description: "Famous music festival held in New York" },
+		{ year: 1989, name: "Fall of the Berlin Wall", description: "The Berlin Wall is torn down" },
+		{ year: 1989, name: "First GPS Satellite", description: "First GPS satellite put into orbit" },
+		{ year: 2001, name: "Wikipedia Founded", description: "The free online encyclopedia is launched" },
+		{ year: 2001, name: "iPod Released", description: "Apple releases the first iPod" },
+		// Add more events as needed
+	];
 
-  let timeline = [];
-  let availableEvents = [];
-  let gameOver = false;
+	let timeline = [];
+	let availableEvents = [];
+	let currentEvent = null;
+	let gameOver = false;
 
-  function startGame() {
-    timeline = [];
-    availableEvents = [...events].sort(() => Math.random() - 0.5);
-    gameOver = false;
-  }
+	function startGame() {
+		timeline = [];
+		availableEvents = [...events].sort(() => Math.random() - 0.5);
+		gameOver = false;
+		nextEvent();
+	}
 
-  function handleDragStart(event, card) {
-    event.dataTransfer.setData('text/plain', JSON.stringify(card));
-  }
+	function nextEvent() {
+		if (availableEvents.length > 0) {
+		const randomIndex = Math.floor(Math.random() * availableEvents.length);
+		currentEvent = availableEvents[randomIndex];
+		availableEvents = availableEvents.filter((_, index) => index !== randomIndex);
+		} else {
+		gameOver = true;
+		currentEvent = null;
+		}
+	}
 
-  function handleDragOver(event) {
-    event.preventDefault();
-  }
+	function handleDragStart(event, card) {
+		event.dataTransfer.setData('text/plain', JSON.stringify(card));
+	}
 
-  function handleDrop(event, index) {
-    event.preventDefault();
-    const droppedCard = JSON.parse(event.dataTransfer.getData('text'));
-    placeEvent(droppedCard, index);
-  }
+	function handleDragOver(event) {
+		event.preventDefault();
+	}
 
-  function placeEvent(event, index) {
-    const isCorrectPlacement = 
-      (index === 0 || timeline[index - 1].year <= event.year) &&
-      (index === timeline.length || timeline[index].year >= event.year);
+	function handleDrop(event, index) {
+		event.preventDefault();
+		const droppedCard = JSON.parse(event.dataTransfer.getData('text'));
+		placeEvent(droppedCard, index);
+	}
 
-    if (isCorrectPlacement) {
-      timeline = [
-        ...timeline.slice(0, index),
-        event,
-        ...timeline.slice(index)
-      ];
-      availableEvents = availableEvents.filter(e => e.name !== event.name);
+	function placeEvent(event, index) {
+		const isCorrectPlacement = 
+		(index === 0 || timeline[index - 1].year <= event.year) &&
+		(index === timeline.length || timeline[index].year >= event.year);
 
-      if (availableEvents.length === 0) {
-        gameOver = true;
-      }
-    } else {
-      gameOver = true;
-    }
-  }
+		if (isCorrectPlacement) {
+		timeline = [
+			...timeline.slice(0, index),
+			event,
+			...timeline.slice(index)
+		];
+		nextEvent();
+		} else {
+		gameOver = true;
+		}
+	}
 
-  startGame();
+	startGame();
 </script>
-
 <main>
 	<h1>Timeline Game</h1>
 	<div class="timeline-container">
@@ -75,23 +83,23 @@
 	  </div>
 	</div>
 	
-	<h2>Available Events</h2>
-	<div class="available-events">
-	  {#each availableEvents as event (event.name)}
-		<div 
-		  class="card" 
-		  draggable="true"
-		  on:dragstart={(e) => handleDragStart(e, event)}
-		>
-		  <h4>{event.name}</h4>
-		  <p>{event.description}</p>
-		</div>
-	  {/each}
-	</div>
+	<h2 style="text-align: center;">Current Event</h2>
+	{#if currentEvent}
+	  <div 
+		class="card current-event" 
+		draggable="true"
+		on:dragstart={(e) => handleDragStart(e, currentEvent)}
+	  >
+		<h4>{currentEvent.name}</h4>
+		<p>{currentEvent.description}</p>
+	  </div>
+	{:else}
+	  <p style="text-align: center;">No more events</p>
+	{/if}
   
 	{#if gameOver}
 	  <div class="game-over">
-		<h2>{availableEvents.length === 0 ? 'Congratulations! You won!' : 'Game Over!'}</h2>
+		<h2>{availableEvents.length === 0 && timeline.length === events.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
 		<button on:click={startGame}>Play Again</button>
 	  </div>
 	{/if}
@@ -102,6 +110,12 @@
 	  padding: 20px;
 	}
   
+	.current-event {
+    margin: 20px auto;
+    background-color: #f0f0f0;
+    border: 2px solid #4CAF50;
+  	}
+
 	.timeline-container {
 	  width: 100%;
 	  overflow-x: auto;
