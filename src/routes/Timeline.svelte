@@ -1,81 +1,90 @@
-<script>
-	let events = [
-		{ year: 1969, name: "Moon Landing", description: "Apollo 11 lands on the moon" },
-		{ year: 1969, name: "Woodstock", description: "Famous music festival held in New York" },
-		{ year: 1989, name: "Fall of the Berlin Wall", description: "The Berlin Wall is torn down" },
-		{ year: 1989, name: "First GPS Satellite", description: "First GPS satellite put into orbit" },
-		{ year: 2001, name: "Wikipedia Founded", description: "The free online encyclopedia is launched" },
-		{ year: 2001, name: "iPod Released", description: "Apple releases the first iPod" },
-		// Add more events as needed
-	];
+<script lang="ts">
+	import { onMount } from 'svelte';
 
-	let timeline = [];
-	let availableEvents = [];
-	let currentEvent = null;
+	interface Product {
+		id: number;
+		name: string;
+		carbonFootprint: number;
+		description: string;
+		source: string;
+	}
+
+	let products: Product[] = []
+
+
+	let timeline: Product[] = [];
+	let availableProducts: Product[] = [];
+	let currentProduct: Product | null = null;
 	let gameOver = false;
 
 	function startGame() {
 		timeline = [];
-		availableEvents = [...events].sort(() => Math.random() - 0.5);
+		availableProducts = [...products.filter(p => p.name.length <= 30)].sort(() => Math.random() - 0.5);
 		gameOver = false;
-		nextEvent();
+		nextProduct();
 	}
 
-	function nextEvent() {
-		if (availableEvents.length > 0) {
-		const randomIndex = Math.floor(Math.random() * availableEvents.length);
-		currentEvent = availableEvents[randomIndex];
-		availableEvents = availableEvents.filter((_, index) => index !== randomIndex);
+	function nextProduct() {
+		if (availableProducts.length > 0) {
+			const randomIndex = Math.floor(Math.random() * availableProducts.length);
+			currentProduct = availableProducts[randomIndex];
+			availableProducts = availableProducts.filter((_, index) => index !== randomIndex);
 		} else {
-		gameOver = true;
-		currentEvent = null;
+			gameOver = true;
+			currentProduct = null;
 		}
 	}
 
-	function handleDragStart(event, card) {
+	function handleDragStart(event: any ,card: Product) {
 		event.dataTransfer.setData('text/plain', JSON.stringify(card));
 	}
 
-	function handleDragOver(event) {
+	function handleDragOver(event: any) {
 		event.preventDefault();
 	}
 
-	function handleDrop(event, index) {
+	function handleDrop(event: any, index: number) {
 		event.preventDefault();
 		const droppedCard = JSON.parse(event.dataTransfer.getData('text'));
-		placeEvent(droppedCard, index);
+		placeProduct(droppedCard, index);
 	}
 
-	function placeEvent(event, index) {
+	function placeProduct(product: Product, index: number) {
 		const isCorrectPlacement = 
-		(index === 0 || timeline[index - 1].year <= event.year) &&
-		(index === timeline.length || timeline[index].year >= event.year);
+		(index === 0 || timeline[index - 1].carbonFootprint <= product.carbonFootprint) &&
+		(index === timeline.length || timeline[index].carbonFootprint >= product.carbonFootprint);
 
 		if (isCorrectPlacement) {
 		timeline = [
 			...timeline.slice(0, index),
-			event,
+			product,
 			...timeline.slice(index)
 		];
-		nextEvent();
+		nextProduct();
 		} else {
 		gameOver = true;
 		}
 	}
 
-	startGame();
+	onMount(async () => {
+		const response = await fetch('/api/products');
+        products = await response.json();
+		startGame();
+	})
+
+	
 </script>
 <main>
 	<h1>Timeline Game</h1>
 	<div class="timeline-container">
 	  <div class="timeline">
 		<div class="drop-zone" on:dragover={handleDragOver} on:drop={(e) => handleDrop(e, 0)}></div>
-		{#each timeline as event, index (event.name)}
+		{#each timeline as product, index (product.name)}
 		  <div class="timeline-item">
 			<div class="card placed">
-			  <h3>{event.year}</h3>
-			  <h4>{event.name}</h4>
-			  <p>{event.description}</p>
+			  <h3>Carbon Footprint: {product.carbonFootprint.toFixed(2)} kg CO2e </h3>
+			  <h4>{product.name}</h4>
+			  <p>{product.description}</p>
 			</div>
 			<div class="drop-zone" on:dragover={handleDragOver} on:drop={(e) => handleDrop(e, index + 1)}></div>
 		  </div>
@@ -83,23 +92,23 @@
 	  </div>
 	</div>
 	
-	<h2 style="text-align: center;">Current Event</h2>
-	{#if currentEvent}
+	<h2 style="text-align: center;">Current Product</h2>
+	{#if currentProduct}
 	  <div 
 		class="card current-event" 
 		draggable="true"
-		on:dragstart={(e) => handleDragStart(e, currentEvent)}
+		on:dragstart={(e) => handleDragStart(e, currentProduct)}
 	  >
-		<h4>{currentEvent.name}</h4>
-		<p>{currentEvent.description}</p>
+		<h3>{currentProduct.name.toWellFormed()}</h3>
+		<p>{currentProduct.description}</p>
 	  </div>
 	{:else}
-	  <p style="text-align: center;">No more events</p>
+	  <p style="text-align: center;">No more products</p>
 	{/if}
   
 	{#if gameOver}
 	  <div class="game-over">
-		<h2>{availableEvents.length === 0 && timeline.length === events.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
+		<h2>{availableProducts.length === 0 && timeline.length === products.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
 		<button on:click={startGame}>Play Again</button>
 	  </div>
 	{/if}
@@ -141,7 +150,7 @@
 	  margin: 0 10px;
 	}
   
-	.available-events {
+	.available-products {
 	  display: flex;
 	  flex-wrap: wrap;
 	  gap: 20px;
