@@ -9,13 +9,13 @@
 		source: string;
 	}
 
-	let products: Product[] = []
-
-
+	let products: Product[] = [];
 	let timeline: Product[] = [];
 	let availableProducts: Product[] = [];
 	let currentProduct: Product | null = null;
 	let gameOver = false;
+	let draggingProduct: Product | null = null;
+	let hoveringIndex: number | null = null;
 
 	function startGame() {
 		timeline = [];
@@ -35,84 +35,125 @@
 		}
 	}
 
-	function handleDragStart(event: any ,card: Product) {
+	function handleDragStart(event: any, card: Product | null) {
 		event.dataTransfer.setData('text/plain', JSON.stringify(card));
+		draggingProduct = card;
 	}
 
-	function handleDragOver(event: any) {
+	function handleDragOver(event: any, index: number) {
 		event.preventDefault();
+		hoveringIndex = index;
 	}
 
 	function handleDrop(event: any, index: number) {
 		event.preventDefault();
 		const droppedCard = JSON.parse(event.dataTransfer.getData('text'));
 		placeProduct(droppedCard, index);
+		draggingProduct = null;
+		hoveringIndex = null;
+	}
+
+	function handleDragEnd() {
+		hoveringIndex = null;
 	}
 
 	function placeProduct(product: Product, index: number) {
-		const isCorrectPlacement = 
-		(index === 0 || timeline[index - 1].carbonFootprint <= product.carbonFootprint) &&
-		(index === timeline.length || timeline[index].carbonFootprint >= product.carbonFootprint);
+		const isCorrectPlacement =
+			(index === 0 || timeline[index - 1].carbonFootprint <= product.carbonFootprint) &&
+			(index === timeline.length || timeline[index].carbonFootprint >= product.carbonFootprint);
 
 		if (isCorrectPlacement) {
-		timeline = [
-			...timeline.slice(0, index),
-			product,
-			...timeline.slice(index)
-		];
-		nextProduct();
+			timeline = [
+				...timeline.slice(0, index),
+				product,
+				...timeline.slice(index)
+			];
+			nextProduct();
 		} else {
-		gameOver = true;
+			gameOver = true;
 		}
 	}
 
 	onMount(async () => {
 		const response = await fetch('/api/products');
-        products = await response.json();
+		products = await response.json();
 		startGame();
 	})
-
-	
 </script>
+
 <main>
 	<h1>Timeline Game</h1>
 	<div class="timeline-container">
-	  <div class="timeline">
-		<div class="drop-zone" on:dragover={handleDragOver} on:drop={(e) => handleDrop(e, 0)}></div>
-		{#each timeline as product, index (product.name)}
-		  <div class="timeline-item">
-			<div class="card placed">
-			  <h3>Carbon Footprint: {product.carbonFootprint.toFixed(2)} kg CO2e </h3>
-			  <h4>{product.name}</h4>
-			  <p>{product.description}</p>
+		<div class="timeline">
+			<div class="drop-zone" on:dragover={(e) => handleDragOver(e, 0)} on:drop={(e) => handleDrop(e, 0)} role="region" aria-label="Drop zone for first product">
+				{#if timeline.length === 0}
+					{#if hoveringIndex === 0 && draggingProduct}
+						<div class="card hovering">
+							<h4>{draggingProduct.name}</h4>
+							<p>{draggingProduct.description}</p>
+						</div>
+					{:else}
+						<div class="card placeholder">
+							<p>Drop 1st product here</p>
+						</div>
+					{/if}
+				{:else if hoveringIndex === 0 && draggingProduct}
+					<div class="card hovering">
+						<h4>{draggingProduct.name}</h4>
+						<p>{draggingProduct.description}</p>
+					</div>
+				{/if}
 			</div>
-			<div class="drop-zone" on:dragover={handleDragOver} on:drop={(e) => handleDrop(e, index + 1)}></div>
-		  </div>
-		{/each}
-	  </div>
+
+			{#each timeline as product, index (product.name)}
+				<div class="timeline-item">
+					<div class="card placed">
+						
+						<h4>{product.name}</h4>
+						<p><b>Carbon Footprint</b>:<br> {product.carbonFootprint.toFixed(2)} kg CO2e </p>
+						<p>{product.description}</p>
+					</div>
+					<div class="drop-zone" on:dragover={(e) => handleDragOver(e, index + 1)} on:drop={(e) => handleDrop(e, index + 1)} role="region" aria-label="Drop zone"> 
+						{#if hoveringIndex === index + 1 && draggingProduct}
+							<div class="card hovering">
+								<h4>{draggingProduct.name}</h4>
+								<p>{draggingProduct.description}</p>
+							</div>
+						{/if}
+					</div>
+				</div>
+			{/each}
+		</div>
 	</div>
-	
+
 	<h2 style="text-align: center;">Current Product</h2>
 	{#if currentProduct}
-	  <div 
-		class="card current-event" 
-		draggable="true"
-		on:dragstart={(e) => handleDragStart(e, currentProduct)}
-	  >
-		<h3>{currentProduct.name.toWellFormed()}</h3>
-		<p>{currentProduct.description}</p>
-	  </div>
+		<div 
+			class="card current-event" 
+			draggable="true"
+			on:dragstart={(e) => handleDragStart(e, currentProduct)}
+			on:dragend={handleDragEnd}
+			role="button"
+			aria-label="Draggable current product"
+			tabindex="0"
+		>
+			<h3>{currentProduct.name.toWellFormed()}</h3>
+			<p>{currentProduct.description}</p>
+		</div>
 	{:else}
-	  <p style="text-align: center;">No more products</p>
+		<p style="text-align: center;">No more products</p>
 	{/if}
-  
+
 	{#if gameOver}
-	  <div class="game-over">
-		<h2>{availableProducts.length === 0 && timeline.length === products.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
-		<button on:click={startGame}>Play Again</button>
-	  </div>
+		<div class="game-over">
+			<h2>{availableProducts.length === 0 && timeline.length === products.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
+			<button on:click={startGame}>Play Again</button>
+		</div>
 	{/if}
-  </main>
+</main>
+
+
+
   
   <style>
 	main {
@@ -144,18 +185,13 @@
 	}
   
 	.drop-zone {
-	  width: 20px;
+	  /* width: 20px; */
 	  background-color: transparent;
-	  border-left: 2px dashed #ccc;
+	  border-left: 10px dashed transparent;
+	  border-right: 10px dashed transparent;
 	  margin: 0 10px;
 	}
   
-	.available-products {
-	  display: flex;
-	  flex-wrap: wrap;
-	  gap: 20px;
-	  justify-content: center;
-	}
   
 	.card {
 	  background-color: #ffffff;
@@ -177,6 +213,17 @@
 	.card.placed {
 	  background-color: #e6f3ff;
 	  cursor: default;
+	}
+
+	.card.placeholder {
+		background-color: #f0f0f0;
+		border: 1px dashed #ccc;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 150px;
+		color: #999;
+		font-style: italic;
 	}
   
 	.card h3, .card h4 {
@@ -204,5 +251,10 @@
   
 	button:hover {
 	  background-color: #45a049;
+	}
+
+	.card.hovering {
+		opacity: 0.5;
+		background-color: #dff0ff;
 	}
   </style>
