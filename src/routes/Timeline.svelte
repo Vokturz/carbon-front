@@ -85,7 +85,12 @@
 	<h1>Timeline Game</h1>
 	<div class="timeline-container">
 		<div class="timeline">
-			<div class="drop-zone" on:dragover={(e) => handleDragOver(e, 0)} on:drop={(e) => handleDrop(e, 0)} role="region" aria-label="Drop zone for first product">
+			<!-- on:dragleave={handleDragEnd} -->
+			<div class="drop-zone"
+				on:dragover={(e) => handleDragOver(e, 0)}
+				on:drop={(e) => handleDrop(e, 0)}
+				role="region"
+				aria-label="Drop zone for first product">
 				{#if timeline.length === 0}
 					{#if hoveringIndex === 0 && draggingProduct}
 						<div class="card hovering">
@@ -113,7 +118,11 @@
 						<p><b>Carbon Footprint</b>:<br> {product.carbonFootprint.toFixed(2)} kg CO2e </p>
 						<p>{product.description}</p>
 					</div>
-					<div class="drop-zone" on:dragover={(e) => handleDragOver(e, index + 1)} on:drop={(e) => handleDrop(e, index + 1)} role="region" aria-label="Drop zone"> 
+					<!-- on:dragleave={handleDragEnd} -->
+					<div class="drop-zone"
+						on:dragover={(e) => handleDragOver(e, index + 1)}
+						on:drop={(e) => handleDrop(e, index + 1)}
+						role="region" aria-label="Drop zone"> 
 						{#if hoveringIndex === index + 1 && draggingProduct}
 							<div class="card hovering">
 								<h4>{draggingProduct.name}</h4>
