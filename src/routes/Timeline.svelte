@@ -13,14 +13,25 @@
 	let timeline: Product[] = [];
 	let availableProducts: Product[] = [];
 	let currentProduct: Product | null = null;
+	let gameStarted = false;
 	let gameOver = false;
 	let draggingProduct: Product | null = null;
 	let hoveringIndex: number | null = null;
+
+	// Multiplayer
+	let numberOfPlayers = 1;
+	let playerScores: number[] = [];
+	let currentPlayerTurn = 0;
+
+
 
 	function startGame() {
 		timeline = [];
 		availableProducts = [...products.filter(p => p.name.length <= 30)].sort(() => Math.random() - 0.5);
 		gameOver = false;
+		currentPlayerTurn = 1;
+		playerScores = Array(numberOfPlayers).fill(0);
+		gameStarted = true;
 		nextProduct();
 	}
 
@@ -31,6 +42,7 @@
 			availableProducts = availableProducts.filter((_, index) => index !== randomIndex);
 		} else {
 			gameOver = true;
+			gameStarted = false;
 			currentProduct = null;
 		}
 	}
@@ -68,95 +80,124 @@
 				product,
 				...timeline.slice(index)
 			];
+			playerScores[currentPlayerTurn]++
+			nextTurn();
 			nextProduct();
 		} else {
 			gameOver = true;
 		}
 	}
 
+	function nextTurn(){
+		currentPlayerTurn = currentPlayerTurn % numberOfPlayers + 1;
+	}
+
+	function restartGame(){
+		timeline = [];
+		gameOver = false;
+		gameStarted = false;
+	}
+
 	onMount(async () => {
 		const response = await fetch('/api/products');
 		products = await response.json();
-		startGame();
+		// startGame();
 	})
 </script>
 
 <main>
 	<h1>Timeline Game</h1>
-	<div class="timeline-container">
-		<div class="timeline">
-			<!-- on:dragleave={handleDragEnd} -->
-			<div class="drop-zone"
-				on:dragover={(e) => handleDragOver(e, 0)}
-				on:drop={(e) => handleDrop(e, 0)}
-				role="region"
-				aria-label="Drop zone for first product">
-				{#if timeline.length === 0}
-					{#if hoveringIndex === 0 && draggingProduct}
-						<div class="card hovering">
-							<h4>{draggingProduct.name}</h4>
-							<p>{draggingProduct.description}</p>
-						</div>
-					{:else}
-						<div class="card placeholder">
-							<p>Drop 1st product here</p>
-						</div>
-					{/if}
-				{:else if hoveringIndex === 0 && draggingProduct}
-					<div class="card hovering">
-						<h4>{draggingProduct.name}</h4>
-						<p>{draggingProduct.description}</p>
-					</div>
-				{/if}
-			</div>
 
-			{#each timeline as product, index (product.name)}
-				<div class="timeline-item">
-					<div class="card placed">
-						
-						<h4>{product.name}</h4>
-						<p><b>Carbon Footprint</b>:<br> {product.carbonFootprint.toFixed(2)} kg CO2e </p>
-						<p>{product.description}</p>
-					</div>
-					<!-- on:dragleave={handleDragEnd} -->
-					<div class="drop-zone"
-						on:dragover={(e) => handleDragOver(e, index + 1)}
-						on:drop={(e) => handleDrop(e, index + 1)}
-						role="region" aria-label="Drop zone"> 
-						{#if hoveringIndex === index + 1 && draggingProduct}
+	{#if !gameOver && timeline.length === 0 && !gameStarted }
+		<div class="player-selection">
+			<label for="playerCount">Number of Players:</label>
+			<select id="playerCount" bind:value={numberOfPlayers}>
+			{#each Array(4) as _, i}
+				<option value={i + 1}>{i + 1}</option>
+			{/each}
+			</select>
+			<button on:click={startGame}>Start Game</button>
+		</div>
+	{:else}
+		<div class="timeline-container">
+			<div class="timeline">
+				<!-- on:dragleave={handleDragEnd} -->
+				<div class="drop-zone"
+					on:dragover={(e) => handleDragOver(e, 0)}
+					on:drop={(e) => handleDrop(e, 0)}
+					role="region"
+					aria-label="Drop zone for first product">
+					{#if timeline.length === 0}
+						{#if hoveringIndex === 0 && draggingProduct}
 							<div class="card hovering">
 								<h4>{draggingProduct.name}</h4>
 								<p>{draggingProduct.description}</p>
 							</div>
+						{:else}
+							<div class="card placeholder">
+								<p>Drop 1st product here</p>
+							</div>
 						{/if}
-					</div>
+					{:else if hoveringIndex === 0 && draggingProduct}
+						<div class="card hovering">
+							<h4>{draggingProduct.name}</h4>
+							<p>{draggingProduct.description}</p>
+						</div>
+					{/if}
 				</div>
-			{/each}
-		</div>
-	</div>
 
-	<h2 style="text-align: center;">Current Product</h2>
-	{#if currentProduct}
-		<div 
-			class="card current-event" 
-			draggable="true"
-			on:dragstart={(e) => handleDragStart(e, currentProduct)}
-			on:dragend={handleDragEnd}
-			role="button"
-			aria-label="Draggable current product"
-			tabindex="0"
-		>
-			<h3>{currentProduct.name.toWellFormed()}</h3>
-			<p>{currentProduct.description}</p>
+				{#each timeline as product, index (product.name)}
+					<div class="timeline-item">
+						<div class="card placed">
+							
+							<h4>{product.name}</h4>
+							<p><b>Carbon Footprint</b>:<br> {product.carbonFootprint.toFixed(2)} kg CO2e </p>
+							<p>{product.description}</p>
+						</div>
+						<!-- on:dragleave={handleDragEnd} -->
+						<div class="drop-zone"
+							on:dragover={(e) => handleDragOver(e, index + 1)}
+							on:drop={(e) => handleDrop(e, index + 1)}
+							role="region" aria-label="Drop zone"> 
+							{#if hoveringIndex === index + 1 && draggingProduct}
+								<div class="card hovering">
+									<h4>{draggingProduct.name}</h4>
+									<p>{draggingProduct.description}</p>
+								</div>
+							{/if}
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
-	{:else}
-		<p style="text-align: center;">No more products</p>
+
+		
+		<div class="player-info">
+			<p>Current Player: {currentPlayerTurn}</p>
+		</div>
+		<h2 style="text-align: center;">Current Product</h2>
+		{#if currentProduct}
+			<div 
+				class="card current-event" 
+				draggable="true"
+				on:dragstart={(e) => handleDragStart(e, currentProduct)}
+				on:dragend={handleDragEnd}
+				role="button"
+				aria-label="Draggable current product"
+				tabindex="0"
+			>
+				<h3>{currentProduct.name.toWellFormed()}</h3>
+				<p>{currentProduct.description}</p>
+			</div>
+		{:else}
+			<p style="text-align: center;">No more products</p>
+		{/if}
 	{/if}
 
 	{#if gameOver}
 		<div class="game-over">
 			<h2>{availableProducts.length === 0 && timeline.length === products.length ? 'Congratulations! You won!' : 'Game Over!'}</h2>
-			<button on:click={startGame}>Play Again</button>
+			<button on:click={restartGame}>Restart</button>
 		</div>
 	{/if}
 </main>
@@ -167,6 +208,20 @@
   <style>
 	main {
 	  padding: 20px;
+	}
+
+	.player-selection {
+    margin-bottom: 20px;
+    text-align: center;
+	}
+
+	.player-selection select {
+		margin: 0 10px;
+	}
+
+	.player-info {
+		text-align: center;
+		margin-bottom: 20px;
 	}
   
 	.current-event {
