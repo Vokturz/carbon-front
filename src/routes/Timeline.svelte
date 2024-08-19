@@ -22,7 +22,8 @@
 	let numberOfPlayers = 1;
 	let playerScores: number[] = [];
 	let currentPlayerTurn = 0;
-
+	let showResults = false;
+	let inputValue = '';
 
 
 	function startGame() {
@@ -32,8 +33,27 @@
 		currentPlayerTurn = 1;
 		playerScores = Array(numberOfPlayers).fill(0);
 		gameStarted = true;
-		nextProduct();
+		currentProduct = null;
+		inputValue = '';
+		console.log({availableProducts})
+		// nextProduct();
 	}
+
+	function filterProducts(input: string) {
+		return availableProducts.filter(product => 
+			product.name.toLowerCase().includes(input.toLowerCase())
+		);
+	}
+
+	function selectProduct(product: Product) {
+		currentProduct = product;
+		
+		availableProducts = availableProducts.filter(p => p.name !== product.name);
+		console.log({availableProducts})
+		inputValue = '';
+		showResults = false;
+	}
+
 
 	function nextProduct() {
 		if (availableProducts.length > 0) {
@@ -47,9 +67,11 @@
 		}
 	}
 
-	function handleDragStart(event: any, card: Product | null) {
-		event.dataTransfer.setData('text/plain', JSON.stringify(card));
-		draggingProduct = card;
+	function handleDragStart(event: DragEvent, card: Product) {
+		if (event.dataTransfer) {
+			event.dataTransfer.setData('text/plain', JSON.stringify(card));
+			draggingProduct = card;
+		}
 	}
 
 	function handleDragOver(event: any, index: number) {
@@ -82,7 +104,9 @@
 			];
 			playerScores[currentPlayerTurn]++
 			nextTurn();
-			nextProduct();
+			currentProduct = null; 
+			inputValue = '';
+			// nextProduct();
 		} else {
 			gameOver = true;
 		}
@@ -96,6 +120,12 @@
 		timeline = [];
 		gameOver = false;
 		gameStarted = false;
+	}
+
+	function highlightMatch(text: string, query: string) {
+		if (!query) return text;
+		const regex = new RegExp(`(${query})`, 'gi');
+		return text.replace(regex, '<strong>$1</strong>');
 	}
 
 	onMount(async () => {
@@ -176,22 +206,43 @@
 			<p>Current Player: {currentPlayerTurn}</p>
 		</div>
 		<h2 style="text-align: center;">Current Product</h2>
+		<div 
+		class="card current-event" 
+		draggable={!!currentProduct}
+		on:dragstart={(e) => currentProduct && handleDragStart(e, currentProduct)}
+		on:dragend={handleDragEnd}
+		role={currentProduct ? "button" : ""}
+		aria-label={currentProduct ? "Draggable current product" : ""}
+		>
 		{#if currentProduct}
-			<div 
-				class="card current-event" 
-				draggable="true"
-				on:dragstart={(e) => handleDragStart(e, currentProduct)}
-				on:dragend={handleDragEnd}
-				role="button"
-				aria-label="Draggable current product"
-				tabindex="0"
-			>
-				<h3>{currentProduct.name.toWellFormed()}</h3>
-				<p>{currentProduct.description}</p>
-			</div>
+			<h3>{currentProduct.name}</h3>
+			<p>{currentProduct.description}</p>
 		{:else}
-			<p style="text-align: center;">No more products</p>
+			<div class="autocomplete">
+			<input
+				type="text"
+				bind:value={inputValue}
+				placeholder="Type a product"
+				on:focus={() => showResults = true}
+				on:blur={() => setTimeout(() => showResults = false, 200)}
+			/>
+			{#if showResults && inputValue.length > 0}
+				<ul class="autocomplete-results">
+				{#each filterProducts(inputValue) as product}
+				<button 
+					on:mousedown|preventDefault={() => selectProduct(product)}
+					class="product-button"
+				>
+					{@html highlightMatch(product.name, inputValue)}
+				</button>
+				{/each}
+				</ul>
+			{/if}
+			</div>
 		{/if}
+		</div>
+
+
 	{/if}
 
 	{#if gameOver}
@@ -321,4 +372,63 @@
 		opacity: 0.5;
 		background-color: #dff0ff;
 	}
+
+	.card.current-event {
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		padding: 10px;
+		width: 200px;
+		height: auto;
+		min-height: 150px;
+		cursor: move;
+		transition: background-color 0.3s;
+		overflow: hidden;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	}
+
+
+
+	.autocomplete {
+		position: relative;
+		width: 100%;
+	}
+
+	.autocomplete input {
+		width: 100%;
+		padding: 10px;
+		font-size: 16px;
+		border: none;
+		background-color: transparent;
+		outline: none;
+	}
+
+	.autocomplete-results {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		right: 0;
+		border-top: none;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		max-height: 200px;
+		overflow-y: auto;
+		z-index: 1000;
+	}
+
+
+	.product-button {
+		background: none;
+		border: none;
+		padding: 10px;
+		margin: 0;
+		font: inherit;
+		cursor: pointer;
+		text-align: left;
+		width: 100%;
+		transition: background-color 0.3s;
+		color: #666;
+}
+
+
   </style>
