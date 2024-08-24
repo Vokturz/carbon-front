@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
-import { cards, timeline, availableCards, currentCard, gameState } from './stores';
-import type { Card } from './types';
+import { cards, timeline, availableCards, currentCard, gameState, progress } from './stores';
+import type { Card, GameState } from './types';
 
 export function startGame(event: CustomEvent) {
 
@@ -12,7 +12,9 @@ export function startGame(event: CustomEvent) {
     started: true,
     over: false,
     currentPlayerTurn: 1,
-    playerScores: Array(numberOfPlayers).fill(0)
+    playerScores: Array(numberOfPlayers).fill(0),
+    maxCO2e: 1000,
+    currentCO2e: 0
   });
   currentCard.set(null);
 }
@@ -21,10 +23,10 @@ export function placeCard(product: Card, index: number) {
 
   availableCards.update(cards => cards.filter(p => p.name !== product.name))
 
+  const currentGameState = get(gameState)
   const currentTimeline = get(timeline);
-  const isCorrectPlacement =
-    (index === 0 || currentTimeline[index - 1].carbonFootprint <= product.carbonFootprint) &&
-    (index === currentTimeline.length || currentTimeline[index].carbonFootprint >= product.carbonFootprint);
+  const isCorrectPlacement = product.carbonFootprint + currentGameState.currentCO2e <= currentGameState.maxCO2e
+
 
   if (isCorrectPlacement) {
     timeline.update(tl => [
@@ -35,10 +37,13 @@ export function placeCard(product: Card, index: number) {
     gameState.update(state => {
       state.playerScores[state.currentPlayerTurn - 1]++;
       state.currentPlayerTurn = state.currentPlayerTurn % state.playerScores.length + 1;
+      state.currentCO2e += product.carbonFootprint;
       return state;
     });
+    progress.set(Math.min(currentGameState.currentCO2e / currentGameState.maxCO2e, 100))
     currentCard.set(null);
   } else {
+    // game over
     gameState.update(state => ({ ...state, over: true }));
   }
 }
@@ -48,7 +53,9 @@ export function restartGame() {
     started: false,
     over: false,
     currentPlayerTurn: 1,
-    playerScores: []
+    playerScores: [],
+    maxCO2e: 1000,
+    currentCO2e: 0
   });
   timeline.set([]);
 }

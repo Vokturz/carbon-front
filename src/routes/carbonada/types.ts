@@ -5,3 +5,13 @@ export interface Card {
     description: string;
     source: string;
 }
+
+
+export interface GameState {
+    started: boolean
+    over: boolean
+    currentPlayerTurn: number,
+    playerScores: number[],
+    maxCO2e: number
+    currentCO2e: number
+}
