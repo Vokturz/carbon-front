@@ -43,10 +43,24 @@
 
 </script>
 
+<div class="search-container">
+  <div class="search-bar">
+    <i class="fas fa-search icon"></i>
+    <input
+      type="text"
+      placeholder="Search for a item..."
+      on:input={handleSearch}
+      on:keydown={handleKeyDown}
+      bind:value={searchQuery}
+    />
+  </div>
+</div>
+
+
 <style>
   .search-container {
     position: relative;
-    margin-bottom: 1rem;
+    margin-bottom: 6rem;
     display: flex;
     justify-content: center;
   }
@@ -72,16 +86,3 @@
     color: #888;
   }
 </style>
-
-<div class="search-container">
-  <div class="search-bar">
-    <i class="fas fa-search icon"></i>
-    <input
-      type="text"
-      placeholder="Search for a card..."
-      on:input={handleSearch}
-      on:keydown={handleKeyDown}
-      bind:value={searchQuery}
-    />
-  </div>
-</div>
