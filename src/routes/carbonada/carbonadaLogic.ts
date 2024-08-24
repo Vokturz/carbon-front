@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { carbonada, currentItem, gameState, loading, progress } from './stores';
-import type { Item, GameState } from './types';
+import type { Item } from './types';
 
 export function startGame(event: CustomEvent) {
 
@@ -11,7 +11,7 @@ export function startGame(event: CustomEvent) {
     over: false,
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0),
-    maxCO2e: 100,
+    maxCO2e: 1000,
     currentCO2e: 0
   });
   currentItem.set(null);
@@ -19,24 +19,23 @@ export function startGame(event: CustomEvent) {
   loading.set(false)
 }
 
-export function placeItem(card: Item) {
+export function placeItem(item: Item) {
 
   const currentGameState = get(gameState)
-  const isCorrectPlacement = card.carbon_footprint + currentGameState.currentCO2e <= currentGameState.maxCO2e
+  const isCorrectPlacement = item.carbon_footprint + currentGameState.currentCO2e <= currentGameState.maxCO2e
 
 
-  if (isCorrectPlacement) {
-    carbonada.update(tl => [...tl, card]);
-    gameState.update(state => {
-      state.playerScores[state.currentPlayerTurn - 1]++;
-      state.currentPlayerTurn = state.currentPlayerTurn % state.playerScores.length + 1;
-      state.currentCO2e += card.carbon_footprint;
-      return state;
-    });
-    progress.set(Math.min(currentGameState.currentCO2e / currentGameState.maxCO2e, 100))
-    currentItem.set(null);
-  } else {
-    // game over
+  
+  gameState.update(state => {
+    state.playerScores[state.currentPlayerTurn - 1]++;
+    state.currentPlayerTurn = state.currentPlayerTurn % state.playerScores.length + 1;
+    state.currentCO2e += item.carbon_footprint;
+    return state;
+  });
+  progress.set(Math.min(currentGameState.currentCO2e / currentGameState.maxCO2e, 100))
+  currentItem.set(null);
+  carbonada.update(tl => [...tl, item]);
+  if (!isCorrectPlacement) {
     gameState.update(state => ({ ...state, over: true }));
   }
 }

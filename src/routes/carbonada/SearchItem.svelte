@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import { currentItem, loading } from './stores'; // Adjust the import path as necessary
   import type { Item } from './types';
   import { placeItem } from './carbonadaLogic';

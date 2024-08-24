@@ -1,11 +1,15 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
+  import { gameState } from './stores';
   const dispatch = createEventDispatcher();
+
+  let exceeededCO2e = $gameState.currentCO2e - $gameState.maxCO2e;
 </script>
 
 <div class="modal-overlay">
   <div class="modal-content">
     <h2>Game Over!</h2>
+    <p>You have exceeded the CO2e limit by {exceeededCO2e.toFixed(2)} </p>
     <button on:click={() => dispatch('restart')}>Restart</button>
   </div>
 </div>
