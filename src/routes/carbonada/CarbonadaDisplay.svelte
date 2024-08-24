@@ -2,22 +2,11 @@
     import { createEventDispatcher } from 'svelte';
     import { carbonada, draggingCard, progress, gameState } from './stores';
 	import { placeCard } from './carbonadaLogic';
-	import { cubicOut } from 'svelte/easing';
-	import { tweened } from 'svelte/motion';
+	import ProgressBar from './ProgressBar.svelte';
   
     let hoveringIndex: number | null = null;
   
     const dispatch = createEventDispatcher();
-
-	const tweenedProgress = tweened(0, {
-		duration: 400, // Duration of the animation in milliseconds
-		easing: cubicOut
-	});
-
-	progress.subscribe(value => {
-		tweenedProgress.set(value);
-	});
-
 
     function handleDragOver(event: DragEvent, index: number) {
       event.preventDefault();
@@ -69,10 +58,7 @@
 		{/if}
       </div>
     </div>
-	<div class="progress-container">
-		<p>{$gameState.currentCO2e.toFixed(2)} CO2e</p>
-		<progress value={$tweenedProgress}></progress>
-	</div>
+	<ProgressBar />
   </div>
   
   <style>
@@ -92,44 +78,6 @@
 	  min-height: 200px;
 	  justify-content: center;
 	}
-  
-	.progress-container {
-		position: absolute;
-		margin-left: 80%;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		width: 30px;
-		display: flex;
-		align-items: stretch;
-	}
-	
-	.progress-container progress {
-	  width: 100%;
-	  height: auto;
-	  -webkit-appearance: none;
-	  appearance: none;
-	  writing-mode: vertical-lr; /* Make the progress bar vertical */
-	  transform: rotate(180deg); /* Flip the progress bar */
-	}
-  
-	/* Webkit styles for the progress bar */
-	.progress-container progress::-webkit-progress-bar {
-	  background-color: #f0f0f0;
-	  border-radius: 10px;
-	}
-  
-	.progress-container progress::-webkit-progress-value {
-	  background-color: #4CAF50;
-	  border-radius: 10px;
-	}
-  
-	/* Firefox styles for the progress bar */
-	.progress-container progress::-moz-progress-bar {
-	  background-color: #4CAF50;
-	  border-radius: 10px;
-	}
-  
   
     .cards-dropped-list {
 		position: absolute;
