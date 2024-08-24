@@ -1,10 +1,10 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { availableProducts, timeline, products } from './stores';
+    import { availableCards, timeline, cards } from './stores';
   
     const dispatch = createEventDispatcher();
   
-    $: isWin = $availableProducts.length === 0 && $timeline.length === $products.length;
+    $: isWin = $availableCards.length === 0 && $timeline.length === $cards.length;
   </script>
   
   <div class="game-over">

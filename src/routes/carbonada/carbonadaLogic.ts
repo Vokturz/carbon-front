@@ -1,12 +1,12 @@
 import { get } from 'svelte/store';
-import { products, timeline, availableProducts, currentProduct, gameState } from './stores';
-import type { Product } from './types';
+import { cards, timeline, availableCards, currentCard, gameState } from './stores';
+import type { Card } from './types';
 
 export function startGame(event: CustomEvent) {
 
   const { numberOfPlayers } = event.detail
-  const allProducts = get(products);
-  availableProducts.set([...allProducts.filter(p => p.name.length <= 30)].sort(() => Math.random() - 0.5));
+  const allCards = get(cards);
+  availableCards.set([...allCards.filter(p => p.name.length <= 30)].sort(() => Math.random() - 0.5));
   timeline.set([]);
   gameState.set({
     started: true,
@@ -14,12 +14,12 @@ export function startGame(event: CustomEvent) {
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0)
   });
-  currentProduct.set(null);
+  currentCard.set(null);
 }
 
-export function placeProduct(product: Product, index: number) {
+export function placeCard(product: Card, index: number) {
 
-  availableProducts.update(products => products.filter(p => p.name !== product.name))
+  availableCards.update(cards => cards.filter(p => p.name !== product.name))
 
   const currentTimeline = get(timeline);
   const isCorrectPlacement =
@@ -37,7 +37,7 @@ export function placeProduct(product: Product, index: number) {
       state.currentPlayerTurn = state.currentPlayerTurn % state.playerScores.length + 1;
       return state;
     });
-    currentProduct.set(null);
+    currentCard.set(null);
   } else {
     gameState.update(state => ({ ...state, over: true }));
   }

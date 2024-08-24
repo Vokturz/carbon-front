@@ -1,5 +1,5 @@
 <script>
-	import Timeline from './timeline/Timeline.svelte';
+	import Carbonada from './carbonada/Carbonada.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
 </script>
@@ -19,7 +19,7 @@
 		</span>
 	</h1> -->
 
-	<Timeline />
+	<Carbonada />
 </section>
 
 <style>

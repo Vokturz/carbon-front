@@ -1,7 +1,7 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import type { Product } from './types';
-    import { currentProduct, availableProducts, draggingProduct } from './stores';
+    import type { Card } from './types';
+    import { currentCard, availableCards, draggingCard } from './stores';
     import { highlightMatch } from './utils';
   
     let inputValue = '';
@@ -9,56 +9,56 @@
   
     const dispatch = createEventDispatcher();
   
-    function filterProducts(input: string) {
-      return $availableProducts.filter((product: Product) => 
-        product.name.toLowerCase().includes(input.toLowerCase())
+    function filterCards(input: string) {
+      return $availableCards.filter((card: Card) => 
+        card.name.toLowerCase().includes(input.toLowerCase())
       );
     }
   
-    function selectProduct(product: Product) {
-      currentProduct.set(product);
-      availableProducts.update((products: Product[]) => products.filter(p => p.name !== product.name));
+    function selectCard(card: Card) {
+      currentCard.set(card);
+      availableCards.update((cards: Card[]) => cards.filter(p => p.name !== card.name));
       inputValue = '';
       showResults = false;
     }
   
-    function handleDragStart(event: DragEvent, product: Product) {
+    function handleDragStart(event: DragEvent, card: Card) {
       if (event.dataTransfer) {
-        event.dataTransfer.setData('text/plain', JSON.stringify(product));
-        draggingProduct.set(product);
+        event.dataTransfer.setData('text/plain', JSON.stringify(card));
+        draggingCard.set(card);
       }
     }
   </script>
   
-  <h2 style="text-align: center;">Current Product</h2>
+  <h2 style="text-align: center;">Current Card</h2>
   <div 
     class="card current-event" 
-    draggable={!!$currentProduct}
-    on:dragstart={(e) => $currentProduct && handleDragStart(e, $currentProduct)}
+    draggable={!!$currentCard}
+    on:dragstart={(e) => $currentCard && handleDragStart(e, $currentCard)}
     on:dragend={() => dispatch('dragend')}
-    role={$currentProduct ? "button" : ""}
-    aria-label={$currentProduct ? "Draggable current product" : ""}
+    role={$currentCard ? "button" : ""}
+    aria-label={$currentCard ? "Draggable current card" : ""}
   >
-    {#if $currentProduct}
-      <h3>{$currentProduct.name}</h3>
-      <p>{$currentProduct.description}</p>
+    {#if $currentCard}
+      <h3>{$currentCard.name}</h3>
+      <p>{$currentCard.description}</p>
     {:else}
       <div class="autocomplete">
         <input
           type="text"
           bind:value={inputValue}
-          placeholder="Type a product"
+          placeholder="Type a card"
           on:focus={() => showResults = true}
           on:blur={() => setTimeout(() => showResults = false, 200)}
         />
         {#if showResults && inputValue.length > 0}
           <ul class="autocomplete-results">
-            {#each filterProducts(inputValue) as product}
+            {#each filterCards(inputValue) as card}
               <button 
-                on:mousedown|preventDefault={() => selectProduct(product)}
-                class="product-button"
+                on:mousedown|preventDefault={() => selectCard(card)}
+                class="card-button"
               >
-                {@html highlightMatch(product.name, inputValue)}
+                {@html highlightMatch(card.name, inputValue)}
               </button>
             {/each}
           </ul>
@@ -160,7 +160,7 @@
 	}
 
 
-	.product-button {
+	.card-button {
 		background: none;
 		border: none;
 		padding: 10px;

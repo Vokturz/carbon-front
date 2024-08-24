@@ -1,4 +1,4 @@
-export interface Product {
+export interface Card {
     id: number;
     name: string;
     carbonFootprint: number;

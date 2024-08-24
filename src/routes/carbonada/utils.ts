@@ -1,28 +1,28 @@
 import { distance } from 'fastest-levenshtein'
-import type { Product } from './types'
+import type { Card } from './types'
 
 const DISTANCE_THRESHOLD = 5
 
 
 interface Similarity {
-    product: Product
+    card: Card
     score: number
   }
 
 export function topNSimilar(
     targetName: string,
-    products: Product[],
+    cards: Card[],
     n: number = 10,
-  ): Product[] {
-    const similarities: Similarity[] = products.map((product) => ({
-        product,
-        score: distance(targetName, product.name),
+  ): Card[] {
+    const similarities: Similarity[] = cards.map((card) => ({
+        card,
+        score: distance(targetName, card.name),
     }))
 
     const topN = similarities.sort((a, b) => a.score - b.score).slice(0, n)
 
     return topN.filter((item) => item.score <= DISTANCE_THRESHOLD)
-        .map((item) => item.product)
+        .map((item) => item.card)
     }
 
 export function highlightMatch(text: string, query: string) {

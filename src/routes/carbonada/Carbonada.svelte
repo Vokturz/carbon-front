@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { products, gameState } from './stores';
-	import { startGame, restartGame } from './timelineLogic';
+	import { cards, gameState } from './stores';
+	import { startGame, restartGame } from './carbonadaLogic';
 	import PlayerSelection from './PlayerSelection.svelte';
-	import TimelineDisplay from './TimelineDisplay.svelte';
-	import CurrentProduct from './CurrentProduct.svelte';
+	import CarbonadaDisplay from './CarbonadaDisplay.svelte';
+	import CurrentProduct from './CurrentCard.svelte';
 	import GameOver from './GameOver.svelte';
   
 	onMount(async () => {
 	  try {
 		const response = await fetch('/api/products');
-		$products = await response.json();
+		$cards = await response.json();
 	  } catch (error) {
 		console.error('Failed to fetch products:', error);
 	  }
@@ -18,11 +18,11 @@
   </script>
   
   <main>
-	<h1>Timeline Game</h1>
+	<h1>Carbonada Game</h1>
 	{#if !$gameState.started}
 	  <PlayerSelection on:start={startGame} />
 	{:else if !$gameState.over}
-	  <TimelineDisplay />
+	  <CarbonadaDisplay />
 	  <div class="player-info">
 		<p>Current Player: {$gameState.currentPlayerTurn}</p>
 	</div>

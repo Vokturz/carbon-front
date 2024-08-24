@@ -1,8 +1,8 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { timeline, draggingProduct } from './stores';
-    import type { Product } from './types';
-	import { placeProduct } from './timelineLogic';
+    import { timeline, draggingCard } from './stores';
+    import type { Card } from './types';
+	import { placeCard } from './carbonadaLogic';
   
     let hoveringIndex: number | null = null;
   
@@ -15,13 +15,13 @@
   
     function handleDrop(event: DragEvent, index: number) {
       event.preventDefault();
-      const droppedProduct = JSON.parse(event.dataTransfer?.getData('text') || '{}');
+      const droppedCard = JSON.parse(event.dataTransfer?.getData('text') || '{}');
       
 
-      placeProduct(droppedProduct, index)
+      placeCard(droppedCard, index)
 
-      dispatch('place', { product: droppedProduct, index });
-      draggingProduct.set(null);
+      dispatch('place', { card: droppedCard, index });
+      draggingCard.set(null);
       hoveringIndex = null;
     }
   
@@ -33,41 +33,41 @@
         on:dragover={(e) => handleDragOver(e, 0)}
         on:drop={(e) => handleDrop(e, 0)}
         role="region"
-        aria-label="Drop zone for first product">
+        aria-label="Drop zone for first card">
         {#if $timeline.length === 0}
-						{#if hoveringIndex === 0 && $draggingProduct}
+						{#if hoveringIndex === 0 && $draggingCard}
 							<div class="card hovering">
-								<h4>{$draggingProduct.name}</h4>
-								<p>{$draggingProduct.description}</p>
+								<h4>{$draggingCard.name}</h4>
+								<p>{$draggingCard.description}</p>
 							</div>
 						{:else}
 							<div class="card placeholder">
-								<p>Drop 1st product here</p>
+								<p>Drop 1st card here</p>
 							</div>
 						{/if}
-					{:else if hoveringIndex === 0 && $draggingProduct}
+					{:else if hoveringIndex === 0 && $draggingCard}
 						<div class="card hovering">
-							<h4>{$draggingProduct.name}</h4>
-							<p>{$draggingProduct.description}</p>
+							<h4>{$draggingCard.name}</h4>
+							<p>{$draggingCard.description}</p>
 						</div>
 					{/if}
       </div>
   
-      {#each $timeline as product, index (product.name)}
+      {#each $timeline as card, index (card.name)}
         <div class="timeline-item">
           <div class="card placed">
-            <h4>{product.name}</h4>
-            <p><b>Carbon Footprint</b>:<br> {product.carbonFootprint.toFixed(2)} kg CO2e </p>
-            <p>{product.description}</p>
+            <h4>{card.name}</h4>
+            <p><b>Carbon Footprint</b>:<br> {card.carbonFootprint.toFixed(2)} kg CO2e </p>
+            <p>{card.description}</p>
           </div>
           <div class="drop-zone"
             on:dragover={(e) => handleDragOver(e, index + 1)}
             on:drop={(e) => handleDrop(e, index + 1)}
             role="region" aria-label="Drop zone">
-            {#if hoveringIndex === index + 1 && $draggingProduct}
+            {#if hoveringIndex === index + 1 && $draggingCard}
               <div class="card hovering">
-                <h4>{$draggingProduct.name}</h4>
-                <p>{$draggingProduct.description}</p>
+                <h4>{$draggingCard.name}</h4>
+                <p>{$draggingCard.description}</p>
               </div>
             {/if}
           </div>
