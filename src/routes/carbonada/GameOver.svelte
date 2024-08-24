@@ -1,14 +1,11 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { availableCards, timeline, cards } from './stores';
-  
     const dispatch = createEventDispatcher();
   
-    $: isWin = $availableCards.length === 0 && $timeline.length === $cards.length;
   </script>
   
   <div class="game-over">
-    <h2>{isWin ? 'Congratulations! You won!' : 'Game Over!'}</h2>
+    <h2>'Game Over!'</h2>
     <button on:click={() => dispatch('restart')}>Restart</button>
   </div>
   

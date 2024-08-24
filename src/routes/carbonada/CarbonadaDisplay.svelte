@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { timeline, draggingCard, progress } from './stores';
+    import { carbonada, draggingCard, progress, gameState } from './stores';
 	import { placeCard } from './carbonadaLogic';
 	import { cubicOut } from 'svelte/easing';
 	import { tweened } from 'svelte/motion';
@@ -36,60 +36,47 @@
       hoveringIndex = null;
     }
   
-  </script>
-  
-  <div class="timeline-container">
-    <div class="timeline">
+</script>
+
+
+  	<div class="cards-dropped-list">
+		<h4>Carbon footprint of dropped Items</h4>
+        <ul>
+            {#each $carbonada as card (card.name)}
+                <li>
+                    <b>{card.name}</b>: {card.carbonFootprint.toFixed(2)} CO2e
+                </li>
+            {/each}
+        </ul>
+	</div>
+  <div class="carbonada-container">
+    <div class="carbonada">
       <div class="drop-zone"
         on:dragover={(e) => handleDragOver(e, 0)}
         on:drop={(e) => handleDrop(e, 0)}
         role="region"
         aria-label="Drop zone for first card">
-        {#if $timeline.length === 0}
-						{#if hoveringIndex === 0 && $draggingCard}
-							<div class="card hovering">
-								<h4>{$draggingCard.name}</h4>
-								<p>{$draggingCard.description}</p>
-							</div>
-						{:else}
-							<div class="card placeholder">
-								<p>Drop 1st card here</p>
-							</div>
-						{/if}
-					{:else if hoveringIndex === 0 && $draggingCard}
-						<div class="card hovering">
-							<h4>{$draggingCard.name}</h4>
-							<p>{$draggingCard.description}</p>
-						</div>
-					{/if}
+
+		{#if hoveringIndex === 0 && $draggingCard}
+			<div class="card hovering">
+				<h4>{$draggingCard.name}</h4>
+				<p>{$draggingCard.description}</p>
+			</div>
+		{:else}
+			<div class="card placeholder">
+				<p>Drop card here</p>
+			</div>
+		{/if}
       </div>
-  
-      {#each $timeline as card, index (card.name)}
-        <div class="timeline-item">
-          <div class="card placed">
-            <h4>{card.name}</h4>
-            <p><b>Carbon Footprint</b>:<br> {card.carbonFootprint.toFixed(2)} kg CO2e </p>
-            <p>{card.description}</p>
-          </div>
-          <div class="drop-zone"
-            on:dragover={(e) => handleDragOver(e, index + 1)}
-            on:drop={(e) => handleDrop(e, index + 1)}
-            role="region" aria-label="Drop zone">
-            {#if hoveringIndex === index + 1 && $draggingCard}
-              <div class="card hovering">
-                <h4>{$draggingCard.name}</h4>
-                <p>{$draggingCard.description}</p>
-              </div>
-            {/if}
-          </div>
-        </div>
-      {/each}
     </div>
-	<div class="progress-container"><progress value={$tweenedProgress}></progress></div>
+	<div class="progress-container">
+		<p>{$gameState.currentCO2e.toFixed(2)} CO2e</p>
+		<progress value={$tweenedProgress}></progress>
+	</div>
   </div>
   
   <style>
-	.timeline-container {
+	.carbonada-container {
 		width: 100%;
 		display: flex;
 		justify-content: center;
@@ -97,8 +84,8 @@
 		margin-bottom: 20px;
 	}
   
-	.timeline {
-	  /* flex: 1; */
+	.carbonada {
+	  flex: 1;
 	  overflow-x: auto;
 	  display: flex;
 	  align-items: stretch;
@@ -112,7 +99,7 @@
 		right: 0;
 		top: 0;
 		bottom: 0;
-		width: 20px;
+		width: 30px;
 		display: flex;
 		align-items: stretch;
 	}
@@ -144,10 +131,36 @@
 	}
   
   
-	.timeline-item {
-	  display: flex;
-	  align-items: stretch;
-	}
+    .cards-dropped-list {
+		position: absolute;
+		left: 10px;
+		top: 10px;
+		bottom: 0;
+		width: 20%;
+		display: flex;
+		flex-direction: column;
+		padding: 50px;
+		/* background-color: #f9f9f9; */
+		border-right: 1px solid #ddd;
+		overflow-y: auto;
+		z-index: 1;
+    }
+
+    .cards-dropped-list h4 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .cards-dropped-list ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .cards-dropped-list li {
+        margin-bottom: 5px;
+        font-size: 14px;
+    }
   
 	.drop-zone {
 	  /* width: 20px; */
@@ -175,10 +188,6 @@
 	  background-color: #f0f0f0;
 	}
   
-	.card.placed {
-	  background-color: #e6f3ff;
-	  cursor: default;
-	}
 
   	.card.placeholder {
 		background-color: #f0f0f0;
