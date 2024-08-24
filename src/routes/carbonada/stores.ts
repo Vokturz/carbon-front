@@ -1,11 +1,8 @@
 import { writable } from 'svelte/store';
-import type { Card, GameState } from './types';
+import type { Item, GameState } from './types';
 
-export const cards = writable<Card[]>([]);
-export const carbonada = writable<Card[]>([]);
-export const availableCards = writable<Card[]>([]);
-export const currentCard = writable<Card | null>(null);
-export const draggingCard = writable<Card | null>(null);
+export const carbonada = writable<Item[]>([]); // list of items
+export const currentItem = writable<Item | null>(null);
 export const gameState = writable<GameState>({
   started: false,
   over: false,

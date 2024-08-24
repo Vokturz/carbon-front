@@ -22,7 +22,7 @@
 <style>
     .progress-container {
 		position: absolute;
-		right: 0;
+		right: -50px;
 		top: 0;
 		bottom: 0;
 		width: 30px;

@@ -1,9 +1,14 @@
-export interface Card {
-    id: number;
-    name: string;
-    carbonFootprint: number;
-    description: string;
-    source: string;
+export interface Item {
+    product: string
+    industry?: string
+    carbon_footprint: number
+    carbon_footprint_per_USD?: number
+    country: string
+    cost?: number
+    cost_reasoning?: string
+    confidence: string
+    source: string
+    model: string
 }
 
 
