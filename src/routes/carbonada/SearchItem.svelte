@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { currentItem, loading } from './stores'; // Adjust the import path as necessary
+  import { currentItem, loading, carbonada } from './stores'; // Adjust the import path as necessary
   import type { Item } from './types';
   import { placeItem } from './carbonadaLogic';
+	import { get } from 'svelte/store';
 
   let searchQuery = '';
+  let alreadyExists = false;
 
   function handleSearch(event: Event) {
     searchQuery = (event.target as HTMLInputElement).value;
@@ -38,8 +40,14 @@
   }
 
   function handleKeyDown(event: KeyboardEvent) {
+    alreadyExists = false
     if (event.key === 'Enter') {
-      fetchSearchResults(searchQuery);
+      const currentCarbonadaItems = get(carbonada).map(i => i.product)
+      if(currentCarbonadaItems.includes(searchQuery)) {
+        alreadyExists = true
+      } else {
+        fetchSearchResults(searchQuery);
+      }
     }
   }
 
@@ -51,6 +59,9 @@
     {#if $loading}
     <div class="loading-indicator">Loading...</div>
     {:else}
+    {#if alreadyExists}
+    <p style="color: red;">This item is already in the Carbonada</p>
+    {/if}
     <input
       type="text"
       placeholder="Search for a item..."
