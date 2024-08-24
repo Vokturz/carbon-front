@@ -3,6 +3,7 @@ import type { Item, GameState } from './types';
 
 export const carbonada = writable<Item[]>([]); // list of items
 export const currentItem = writable<Item | null>(null);
+export const loading = writable(false);
 export const gameState = writable<GameState>({
   started: false,
   over: false,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { currentItem } from './stores'; // Adjust the import path as necessary
+  import { currentItem, loading } from './stores'; // Adjust the import path as necessary
   import type { Item } from './types';
   import { placeItem } from './carbonadaLogic';
 
@@ -11,6 +11,8 @@
   }
 
   async function fetchSearchResults(product: string) {
+
+    loading.set(true);
     try {
       const response = await fetch('/api/mock', {
         method: 'POST',
@@ -26,12 +28,13 @@
 
       const item: Item = await response.json();
       currentItem.set(item);
-      console.log('Search results:', item);
       placeItem(item);
       searchQuery = '';
       // Handle the search results as needed
     } catch (error) {
       console.error('Fetch error:', error);
+    } finally {
+      loading.set(false);
     }
   }
 
@@ -46,6 +49,9 @@
 <div class="search-container">
   <div class="search-bar">
     <i class="fas fa-search icon"></i>
+    {#if $loading}
+    <div class="loading-indicator">Loading...</div>
+    {:else}
     <input
       type="text"
       placeholder="Search for a item..."
@@ -53,6 +59,7 @@
       on:keydown={handleKeyDown}
       bind:value={searchQuery}
     />
+    {/if}
   </div>
 </div>
 
@@ -83,6 +90,15 @@
     top: 50%;
     left: 0.5rem;
     transform: translateY(-50%);
+    color: #888;
+  }
+
+  .loading-indicator {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
     color: #888;
   }
 </style>

@@ -34,8 +34,17 @@
 		</a>
 	</div>
 </header>
+<h1 class="header">Carbonada Game</h1>
 
 <style>
+
+	.header {
+		position: absolute;
+		top: 30px;
+		left: 30px;
+		margin: 0;
+		padding: 10px;
+  	}
 	header {
 		display: flex;
 		justify-content: space-between;

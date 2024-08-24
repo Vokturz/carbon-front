@@ -13,8 +13,12 @@ export interface Item {
     model: string;
 }
 
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 export async function POST({ request }: RequestEvent) {
     const { product, country = undefined, model = undefined } = await request.json();
+
+    await delay(1000)
 
     const item: Item = {
         product,

@@ -31,6 +31,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltejs/adapter-vercel": "^5.4.3",
 		"fastest-levenshtein": "^1.0.16",
 		"node-xlsx": "^0.24.0"
 	}

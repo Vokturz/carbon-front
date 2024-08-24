@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { carbonada, currentItem, gameState, progress } from './stores';
+import { carbonada, currentItem, gameState, loading, progress } from './stores';
 import type { Item, GameState } from './types';
 
 export function startGame(event: CustomEvent) {
@@ -11,10 +11,12 @@ export function startGame(event: CustomEvent) {
     over: false,
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0),
-    maxCO2e: 1000,
+    maxCO2e: 100,
     currentCO2e: 0
   });
   currentItem.set(null);
+  progress.set(0)
+  loading.set(false)
 }
 
 export function placeItem(card: Item) {
@@ -45,8 +47,10 @@ export function restartGame() {
     over: false,
     currentPlayerTurn: 1,
     playerScores: [],
-    maxCO2e: 1000,
+    maxCO2e: 0,
     currentCO2e: 0
   });
   carbonada.set([]);
+  progress.set(0)
+  loading.set(false)
 }

@@ -17,7 +17,7 @@
     }
 
     function getRandomDelay() {
-        return Math.random() * 5;
+        return Math.random() * 2;
     }
 </script>
 
