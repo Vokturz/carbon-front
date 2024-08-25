@@ -1,17 +1,31 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
     import { carbonada } from './stores';
     import ProgressBar from './ProgressBar.svelte';
     import type { Item } from './types';
     import { categoryMap } from './types';
-
+    import musicSrc from '$lib/assets/music.mp3'
 
     let items: Item[] = [];
     carbonada.subscribe(value => {
         items = value;
     });
 
+    let audio: HTMLAudioElement;
+    let isMuted = false;
 
+    onMount(() => {
+        audio = new Audio(musicSrc);
+        audio.loop = true;
+        audio.play();
+    });
+
+    function toggleMute() {
+        if (audio) {
+            isMuted = !isMuted;
+            audio.muted = isMuted;
+        }
+    }
 
     function getRandomPosition() {
         return {
@@ -32,11 +46,10 @@
                 {#if items.length > 0}
                     {#each items as item}
                     <div class="floating-item" 
-                            style=" top: {getRandomPosition().top}; 
+                            style="top: {getRandomPosition().top}; 
                                     left: {getRandomPosition().left}; 
                                     animation-delay: {getRandomDelay()}s;">
                         <img src={categoryMap[item.category]} alt={item.category} class="category-icon">
-
                     </div>
                     {/each}
                 {/if}
@@ -44,7 +57,13 @@
             <ProgressBar />
         </div>
     </div>
+
+    <button class="mute-button" on:click={toggleMute}>
+        {isMuted ? '🔇' : '🔊'}
+    </button>
 </div>
+
+
 
 <style>
     .carbonada-container {
@@ -109,6 +128,19 @@
         height: 30px;
         object-fit: contain;
     }
+
+    .mute-button {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+
     @keyframes float {
         0% {
             transform: translateY(0px) rotate(0deg);

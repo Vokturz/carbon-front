@@ -3,8 +3,8 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>Carbonada</title>
+	<meta name="description" content="Carbonada" />
 </svelte:head>
 
 <section>

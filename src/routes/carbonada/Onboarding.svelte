@@ -29,7 +29,7 @@
           <p>La huella de carbono mide cuánto afectan nuestras acciones al clima del planeta. Todo lo que hacemos, compramos o usamos deja una huella, que es la cantidad de gases que calientan la Tierra. En este juego, debes evitar que la huella de carbono sea demasiado grande para que la carbonada no explote.</p>
           <p>Es importante cuidar nuestra huella de carbono porque, al hacerla más pequeña, ayudamos a proteger el planeta y a tener un futuro mejor.</p>
           <div class="player-selection">
-            <label for="playerCount">Número de Jugadores:</label>
+            <p></p><label for="playerCount">Número de Jugadores:</label>
             <div class="pixel-select-wrapper">
               <select id="playerCount" bind:value={numberOfPlayers} class="pixel-select">
                 {#each Array(4) as _, i}
@@ -82,7 +82,11 @@
       margin-top: 20px;
       text-align: center;
       color: white;
-      font-family: 'Press Start 2P', cursive;
+      text-shadow: 
+      -1px -1px 0 #000,  
+      1px -1px 0 #000,
+      -1px  1px 0 #000,
+      1px  1px 0 #000;
   }
   .pixel-select-wrapper {
       display: inline-block;
