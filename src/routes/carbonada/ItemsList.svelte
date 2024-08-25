@@ -6,15 +6,47 @@
     let isOpen = false;
     let player = 1;
 
-</script>
+    let hoveredItem: any = null;
+    let mouseX = 0;
+    let mouseY = 0;
 
+    let isMobile = false;
+
+    function checkMobile() {
+        isMobile = window.innerWidth <= 767;
+    }
+
+    // Call this function initially and add an event listener for window resize
+    $: {
+        if (typeof window !== 'undefined') {
+            checkMobile();
+            window.addEventListener('resize', checkMobile);
+        }
+    }
+
+    function handleMouseEnter(item: any, event: MouseEvent) {
+        hoveredItem = item;
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
+
+    function handleMouseLeave() {
+        hoveredItem = null;
+    }
+
+    function handleMouseMove(event: MouseEvent) {
+        if (hoveredItem) {
+            mouseX = event.clientX;
+            mouseY = event.clientY;
+        }
+    }
+</script>
 
 <div class="items-list-container">
     <div class="header">
         <button class="toggle-button" on:click={() => isOpen = !isOpen}>
             {isOpen ? '▼ Lista de items' : '▲ Lista de items'}
         </button>
-
     </div>
     {#if isOpen}
         <div class="items-dropped-list" transition:slide={{duration: 300, axis: "y"}}>
@@ -22,7 +54,11 @@
             <ul>
                 {#each $carbonada as item, index (item.product)}
                 {@const playerIndex = Math.floor(index  %  $gameState.playerScores.length)}
-                    <li>
+                    <li 
+                        on:mouseenter={(e) => handleMouseEnter(item, e)}
+                        on:mouseleave={handleMouseLeave}
+                        on:mousemove={handleMouseMove}
+                    >
                         <img src={categoryMap[item.category]} alt={item.category} class="category-icon">
                         <span>(Jugador {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(1)} kg CO2e</span>
                     </li>
@@ -31,6 +67,22 @@
         </div>
     {/if}
 </div>
+
+{#if hoveredItem}
+    <div 
+        class="tooltip" 
+        style="
+            {isMobile 
+                ? `left: ${mouseX}px; top: ${mouseY - 10}px; transform: translateX(-50%) translateY(-100%);`
+                : `left: ${mouseX - 10}px; top: ${mouseY}px; transform: translateX(-50%);`
+            }
+        "
+    >
+        {@html hoveredItem.explanation.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>')}
+    </div>
+{/if}
+
+
 
 <style>
     .items-list-container {
@@ -91,6 +143,54 @@
         width: 15px;
         height: 15px;
         object-fit: contain;
+    }
+
+
+    .tooltip {
+        position: fixed;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        max-width: 200px;
+        z-index: 1001;
+        pointer-events: none; /* Prevents the tooltip from interfering with mouse events */
+    }
+
+    @media (max-width: 767px) {
+        .items-list-container {
+            display: flex;
+            flex-direction: column-reverse;
+            top: auto;
+            bottom: 0;
+        }
+
+        .items-dropped-list {
+            max-height: calc(100vh - 40px);
+            border-top: 1px solid #ddd;
+            border-bottom: none;
+        }
+
+        .items-dropped-list ul {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .items-dropped-list li {
+            flex: 0 0 calc(50% - 5px);
+            margin-bottom: 10px;
+        }
+
+        .tooltip {
+            transform-origin: bottom center;
+        }
+
+
+        .tooltip {
+            transform-origin: center right;
+        }
     }
 
     @media (min-width: 768px) {
