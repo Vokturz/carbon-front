@@ -87,19 +87,20 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
+    
   }
   
   .search-bar {
     position: relative;
     width: 100%;
     max-width: 400px;
+    
   }
 
   .search-bar input {
     width: 100%;
     padding: 0.5rem 0rem 0.5rem 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 3px solid #000;
   }
 
   .search-bar .icon {

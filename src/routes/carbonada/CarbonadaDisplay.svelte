@@ -98,6 +98,8 @@
         color: #333;
         font-style: italic;
         overflow: hidden;
+        background-color: #333;
+        margin-top: 60%;
     }
 
     .floating-item {
@@ -133,6 +135,20 @@
         }
         100% {
             transform: translateY(0px) rotate(0deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .pot {
+            margin-top: 80%;
+            height: 10vh;
+            width: 20vw;
+        }
+
+        .background {
+            padding-bottom: 60%; 
+            width: 60%;
+            max-width: 900px;
         }
     }
 </style>

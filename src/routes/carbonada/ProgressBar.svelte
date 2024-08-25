@@ -22,7 +22,7 @@ function getProgressColor(value: number) {
 </script>
 
 <div class="progress-container">
-    <p>max {$gameState.maxCO2e.toFixed(0)}</p>
+    <p class="limit">max {$gameState.maxCO2e.toFixed(0)}</p>
     <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
     <p class="legend">kg CO2e</p>
 </div>
@@ -30,10 +30,10 @@ function getProgressColor(value: number) {
 <style>
    .progress-container {
         position: fixed;
-        right: -120px;
+        right: -150px;
         top: 50%; /* Center vertically */
         transform: translateY(-50%);
-        width: 30px;
+        width: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -56,7 +56,7 @@ function getProgressColor(value: number) {
 
     .progress-container progress {
         width: 100%;
-        height: 300px;
+        height: 25vh;
         -webkit-appearance: none;
         appearance: none;
         writing-mode: vertical-lr; 
@@ -98,8 +98,10 @@ function getProgressColor(value: number) {
 
     @media (max-width: 768px) {
         .progress-container {
-            right: -50px;
-            width: 20px;
+            right: 5px;
+            margin-top: 20px;
+            width: 30px;
+            transform: translateX(-50%) rotate(90deg); 
         }
 
         .progress-container p {
@@ -107,11 +109,16 @@ function getProgressColor(value: number) {
         }
 
         .progress-container progress {
-            height: 150px;
+            height: 200px;
+            
         }
 
         .progress-container .legend {
             font-size: 12px;
+        }
+
+        .progress-container .limit {
+            transform: rotate(-90deg);
         }
     }
 </style>
