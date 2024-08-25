@@ -153,9 +153,11 @@
         padding: 5px 10px;
         border-radius: 4px;
         font-size: 10px;
-        max-width: 200px;
+        max-width: 300px;
+        min-width: 250px;
         z-index: 1001;
-        pointer-events: none; /* Prevents the tooltip from interfering with mouse events */
+        pointer-events: none;
+        line-height: 1.2;
     }
 
     @media (max-width: 767px) {
@@ -184,6 +186,7 @@
         }
 
         .tooltip {
+            max-width: 250px;
             transform-origin: bottom center;
         }
 
