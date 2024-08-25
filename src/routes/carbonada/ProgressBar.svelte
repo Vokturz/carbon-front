@@ -26,9 +26,12 @@ function getProgressColor(value: number) {
     <p class="limit">max {$gameState.maxCO2e.toFixed(0)}</p>
     <div class="progress-wrapper">
         <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
-        <p class="current-value" style="bottom: calc({$tweenedProgress * 100}% - 10px);">
-            {currentCO2e.toFixed(0)}
-        </p>
+        {#if currentCO2e > 0}
+            <p class="current-value" style="bottom: calc({$tweenedProgress * 100}% - 10px);">
+                {currentCO2e.toFixed(0)}
+            </p>
+        {/if}
+
     </div>
     <p class="legend">kg CO2e</p>
 </div>
@@ -139,7 +142,7 @@ function getProgressColor(value: number) {
         }
 
         .current-value {
-            transform: translateX(5px) rotate(-90deg);
+            transform: translateX(0px) rotate(-90deg);
         }
     }
 </style>

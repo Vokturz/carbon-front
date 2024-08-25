@@ -139,5 +139,14 @@
             width: 60%;
             max-width: 900px;
         }
+
+        .floating-item {
+            gap: 1px;
+        }
+
+        .category-icon {
+        width: 20px;
+        height: 20px;
+    }
     }
 </style>

@@ -4,6 +4,9 @@ import type { Item } from './types';
 
 export function startGame(event: CustomEvent) {
 
+  const possibleMaxCO2eValues = [100, 200, 300, 400, 500];
+  const randomMaxCO2e = possibleMaxCO2eValues[Math.floor(Math.random() * possibleMaxCO2eValues.length)];
+
   const { numberOfPlayers } = event.detail
   carbonada.set([]);
   gameState.set({
@@ -11,7 +14,7 @@ export function startGame(event: CustomEvent) {
     over: false,
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0),
-    maxCO2e: 100,
+    maxCO2e: randomMaxCO2e,
     currentCO2e: 0
   });
   currentItem.set(null);
