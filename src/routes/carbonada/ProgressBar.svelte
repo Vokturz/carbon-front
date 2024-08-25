@@ -28,16 +28,16 @@ function getProgressColor(value: number) {
 </div>
 
 <style>
-    .progress-container {
-        position: absolute;
-        right: -80px;
-        top: -20px;
-        bottom: 0;
+   .progress-container {
+        position: fixed;
+        right: -120px; /* Adjusted from -80px to -60px */
+        top: 50%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust for exact vertical centering */
         width: 30px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        image-rendering: pixelated; /* Ensures pixelated rendering */
+        image-rendering: pixelated;
     }
 
     .progress-container p {
@@ -46,11 +46,12 @@ function getProgressColor(value: number) {
         text-align: center;
         font-size: 16px;
         z-index: 100;
+        color: white;
     }
 
     .progress-container progress {
         width: 100%;
-        height: 200px;
+        height: 300px;
         -webkit-appearance: none;
         appearance: none;
         writing-mode: vertical-lr; 
@@ -87,5 +88,24 @@ function getProgressColor(value: number) {
         position: absolute;
         top: 30%;
         white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+        .progress-container {
+            right: -50px;
+            width: 20px;
+        }
+
+        .progress-container p {
+            font-size: 12px;
+        }
+
+        .progress-container progress {
+            height: 150px;
+        }
+
+        .progress-container .legend {
+            font-size: 12px;
+        }
     }
 </style>

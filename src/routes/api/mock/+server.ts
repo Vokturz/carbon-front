@@ -1,17 +1,7 @@
 import { json, type RequestEvent } from '@sveltejs/kit';
+import type { Category, Item } from '../../carbonada/types';
 
-export interface Item {
-    product: string;
-    industry?: string;
-    carbon_footprint: number;
-    carbon_footprint_per_USD?: number;
-    country: string;
-    cost?: number;
-    cost_reasoning?: string;
-    confidence: string;
-    source: string;
-    model: string;
-}
+
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -19,6 +9,8 @@ export async function POST({ request }: RequestEvent) {
     const { product, country = undefined, model = undefined } = await request.json();
 
     await delay(1000)
+
+    const randomCategory: Category = ["otros", "comida", "vida cotidiana", "tecnología", "servicios"][Math.floor(Math.random() * 5)] as Category
 
     const item: Item = {
         product,
@@ -30,7 +22,9 @@ export async function POST({ request }: RequestEvent) {
         cost_reasoning: 'Example reasoning for cost',
         confidence: 'High',
         source: 'Mock Source',
-        model
+        model,
+        explanation: 'Explanation',
+        category: randomCategory
     };
 
     return json(item);

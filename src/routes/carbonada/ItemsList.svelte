@@ -1,9 +1,25 @@
 <script lang="ts">
     import { carbonada, gameState } from './stores';
     import { slide } from 'svelte/transition';
+    import comida from '$lib/assets/comida.png';
+    import otros from '$lib/assets/otros.gif';
+    import servicios from '$lib/assets/servicios.png';
+    import tecnologia from '$lib/assets/tecnologia.png';
+    import vidaCotidiana from '$lib/assets/vida-cotidiana.png';
+	import type { Category } from './types';
+
     let isOpen = false;
     let player = 1;
+
+    const categoryMap: Record<Category, string> = {
+        'comida': comida,
+        'vida cotidiana': vidaCotidiana,
+        'servicios': servicios,
+        'tecnología': tecnologia,
+        'otros': otros
+    };
 </script>
+
 
 <div class="items-list-container">
     <div class="header">
@@ -19,7 +35,8 @@
                 {#each $carbonada as item, index (item.product)}
                 {@const playerIndex = Math.floor(index  %  $gameState.playerScores.length)}
                     <li>
-                        (Player {playerIndex + 1}) <b>{item.product}</b>: {item.carbon_footprint.toFixed(2)} CO2e
+                        <img src={categoryMap[item.category]} alt={item.category} class="category-icon">
+                        <span>(Player {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(2)} CO2e</span>
                     </li>
                 {/each}
             </ul>
@@ -50,17 +67,6 @@
         cursor: pointer;
     }
 
-    .github-link {
-        display: flex;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .github-logo {
-        width: 24px;
-        height: 24px;
-    }
-
     .items-dropped-list {
         width: 100%;
         max-height: 50vh;
@@ -87,6 +93,15 @@
     .items-dropped-list li {
         margin-bottom: 5px;
         font-size: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .category-icon {
+        width: 15px;
+        height: 15px;
+        object-fit: contain;
     }
 
     @media (min-width: 768px) {

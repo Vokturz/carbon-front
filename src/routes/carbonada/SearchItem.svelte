@@ -1,11 +1,15 @@
 <script lang="ts">
-  import { currentItem, loading, carbonada } from './stores'; // Adjust the import path as necessary
-  import type { Item } from './types';
+  import { currentItem, loading, carbonada } from './stores';
+  import type { Item} from './types';
   import { placeItem } from './carbonadaLogic';
-	import { get } from 'svelte/store';
+  import { get } from 'svelte/store';
+  import searchIcon from '$lib/assets/lupa.png';
+
 
   let searchQuery = '';
   let alreadyExists = false;
+
+
 
   function handleSearch(event: Event) {
     searchQuery = (event.target as HTMLInputElement).value;
@@ -55,21 +59,21 @@
 </script>
 
 <div class="search-container">
+  {#if alreadyExists}
+    <p class="error">This item is already in the Carbonada</p>
+  {/if}
   <div class="search-bar">
-    <i class="fas fa-search icon"></i>
     {#if $loading}
-    <div class="loading-indicator">Loading...</div>
+      <div class="loading-indicator">Loading...</div>
     {:else}
-    {#if alreadyExists}
-    <p style="color: red;">This item is already in the Carbonada</p>
-    {/if}
-    <input
-      type="text"
-      placeholder="Search for a item..."
-      on:input={handleSearch}
-      on:keydown={handleKeyDown}
-      bind:value={searchQuery}
-    />
+      <img src={searchIcon} alt="Search" class="icon" />
+      <input
+        type="text"
+        placeholder="Search for a item..."
+        on:input={handleSearch}
+        on:keydown={handleKeyDown}
+        bind:value={searchQuery}
+      />
     {/if}
   </div>
 </div>
@@ -78,9 +82,11 @@
 <style>
   .search-container {
     position: relative;
-    margin-bottom: 6rem;
+    margin-bottom: 0rem;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
   
   .search-bar {
@@ -91,7 +97,7 @@
 
   .search-bar input {
     width: 100%;
-    padding: 0.5rem 0rem 0.5rem 0.5rem; /* Adjust padding for icon */
+    padding: 0.5rem 0rem 0.5rem 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
@@ -99,9 +105,10 @@
   .search-bar .icon {
     position: absolute;
     top: 50%;
-    left: 0.5rem;
+    right: 0.5rem;
     transform: translateY(-50%);
-    color: #888;
+    width: 1rem; 
+    height: 1rem; 
   }
 
   .loading-indicator {
@@ -110,6 +117,19 @@
     top: 50%;
     transform: translate(-50%, -50%);
     font-size: 0.8rem;
-    color: #888;
+    color: #ffffff;
+  }
+
+  .error {
+    font-size: 16px;
+    color: red;
+    text-shadow: 
+      -2px -2px 0 #fff,  
+       2px -2px 0 #fff,
+      -2px  2px 0 #fff,
+       2px  2px 0 #fff;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
   }
 </style>

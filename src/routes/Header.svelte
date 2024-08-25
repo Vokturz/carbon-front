@@ -5,11 +5,11 @@ import github from '$lib/images/github.svg';
 </script>
 
 <header>
-	<div class="corner">
+	<!-- <div class="corner">
 		<a href="https://github.com/your-repo" target="_blank" class="github-link">
             <img src={github} alt="GitHub" class="github-logo">
         </a>
-	</div>
+	</div> -->
 
 	<div class="header-container">
 		<h1 class="header">CARBONADA</h1>
@@ -46,7 +46,7 @@ import github from '$lib/images/github.svg';
      4px  4px 0 #fff; /* White border */
 }
 
-.corner {
+/* .corner {
 		width: 3em;
 		height: 3em;
 		z-index: 2000;
@@ -65,5 +65,5 @@ import github from '$lib/images/github.svg';
 		width: 2em;
 		height: 2em;
 		object-fit: contain;
-	}
+	} */
 </style>

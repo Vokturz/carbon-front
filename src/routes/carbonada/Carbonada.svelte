@@ -12,7 +12,7 @@ import SearchItem from './SearchItem.svelte';
   {#if !$gameState.started}
     <PlayerSelection on:start={startGame} />
   {:else}
-    <p>Current Player: {$gameState.currentPlayerTurn}</p>
+    <p style="color: #03A61C;">Current Player: {$gameState.currentPlayerTurn}</p>
     <ItemsList />
     <SearchItem />
     <CarbonadaDisplay />
@@ -35,7 +35,7 @@ import SearchItem from './SearchItem.svelte';
     top: 20%;
     width: 60vw;
     position: absolute;
-    background-color: rgba(165, 42, 42, 0.8); 
+    background-color: rgba(212, 138, 0, 0.507); 
     border: 8px solid #000;
     box-shadow: 0 0 0 4px #fff, 0 0 0 8px #000;
   }
@@ -49,6 +49,16 @@ import SearchItem from './SearchItem.svelte';
     position: relative;
     text-align: center;
     color: white;
+    font-size: 14px;
+    text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000, 
+    -2px -2px 0 #fff,  
+     2px -2px 0 #fff,
+    -2px  2px 0 #fff,
+     2px  2px 0 #fff;
     
   }
 
@@ -62,5 +72,9 @@ import SearchItem from './SearchItem.svelte';
      2px -2px 0 #fff,
     -2px  2px 0 #fff,
      2px  2px 0 #fff;
+  }
+
+  footer {
+    font-size: 16px;
   }
 </style>
