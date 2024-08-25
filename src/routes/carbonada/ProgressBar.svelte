@@ -4,7 +4,7 @@ import { tweened } from 'svelte/motion';
 import { progress, gameState } from './stores';
 
 const tweenedProgress = tweened(0, {
-    duration: 400, // Duration of the animation in milliseconds
+    duration: 400,
     easing: cubicOut
 });
 
@@ -13,31 +13,43 @@ progress.subscribe(value => {
 });
 
 $: progressColor = getProgressColor($tweenedProgress);
+$: currentCO2e = $gameState.maxCO2e * $tweenedProgress;
 
 function getProgressColor(value: number) {
-    if (value <= 0.66) return '#00ff00'; // Green
-    if (value <= 0.9) return '#ffff00'; // Yellow
-    return '#ff0000'; // Red
+    if (value <= 0.66) return '#00ff00';
+    if (value <= 0.9) return '#ffff00';
+    return '#ff0000';
 }
 </script>
 
 <div class="progress-container">
     <p class="limit">max {$gameState.maxCO2e.toFixed(0)}</p>
-    <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
+    <div class="progress-wrapper">
+        <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
+        <p class="current-value" style="bottom: calc({$tweenedProgress * 100}% - 10px);">
+            {currentCO2e.toFixed(0)}
+        </p>
+    </div>
     <p class="legend">kg CO2e</p>
 </div>
 
 <style>
-   .progress-container {
+    .progress-container {
         position: fixed;
         right: -150px;
-        top: 50%; /* Center vertically */
+        top: 50%;
         transform: translateY(-50%);
         width: 40px;
         display: flex;
         flex-direction: column;
         align-items: center;
         image-rendering: pixelated;
+    }
+
+    .progress-wrapper {
+        position: relative;
+        width: 100%;
+        height: 25vh;
     }
 
     .progress-container p {
@@ -56,13 +68,20 @@ function getProgressColor(value: number) {
 
     .progress-container progress {
         width: 100%;
-        height: 25vh;
+        height: 100%;
         -webkit-appearance: none;
         appearance: none;
         writing-mode: vertical-lr; 
         transform: rotate(180deg); 
         background-color: #f0f0f0;
         border: 2px solid #000;
+    }
+
+    .current-value {
+        position: absolute;
+        left: 100%;
+        transform: translateX(5px);
+        white-space: nowrap;
     }
   
     /* Webkit styles for the progress bar */
@@ -108,9 +127,8 @@ function getProgressColor(value: number) {
             font-size: 12px;
         }
 
-        .progress-container progress {
+        .progress-wrapper {
             height: 200px;
-            
         }
 
         .progress-container .legend {
@@ -119,6 +137,10 @@ function getProgressColor(value: number) {
 
         .progress-container .limit {
             transform: rotate(-90deg);
+        }
+
+        .current-value {
+            transform: translateX(5px) rotate(-90deg);
         }
     }
 </style>

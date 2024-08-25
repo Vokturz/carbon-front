@@ -1,23 +1,11 @@
 <script lang="ts">
     import { carbonada, gameState } from './stores';
     import { slide } from 'svelte/transition';
-    import comida from '$lib/assets/comida.png';
-    import otros from '$lib/assets/otros.gif';
-    import servicios from '$lib/assets/servicios.png';
-    import tecnologia from '$lib/assets/tecnologia.png';
-    import vidaCotidiana from '$lib/assets/vida-cotidiana.png';
-	import type { Category } from './types';
+    import { categoryMap } from './types';
 
     let isOpen = false;
     let player = 1;
 
-    const categoryMap: Record<Category, string> = {
-        'comida': comida,
-        'vida cotidiana': vidaCotidiana,
-        'servicios': servicios,
-        'tecnología': tecnologia,
-        'otros': otros
-    };
 </script>
 
 

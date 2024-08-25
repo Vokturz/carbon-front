@@ -2,12 +2,8 @@
     import { createEventDispatcher } from 'svelte';
     import { carbonada } from './stores';
     import ProgressBar from './ProgressBar.svelte';
-    import type { Item, Category } from './types';
-    import comida from '$lib/assets/comida.png';
-    import otros from '$lib/assets/otros.gif';
-    import servicios from '$lib/assets/servicios.png';
-    import tecnologia from '$lib/assets/tecnologia.png';
-    import vidaCotidiana from '$lib/assets/vida-cotidiana.png';
+    import type { Item } from './types';
+    import { categoryMap } from './types';
 
 
     let items: Item[] = [];
@@ -15,13 +11,7 @@
         items = value;
     });
 
-    const categoryMap: Record<Category, string> = {
-        'comida': comida,
-        'vida cotidiana': vidaCotidiana,
-        'servicios': servicios,
-        'tecnología': tecnologia,
-        'otros': otros
-    };
+
 
     function getRandomPosition() {
         return {

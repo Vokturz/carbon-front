@@ -24,20 +24,21 @@ import SearchItem from './SearchItem.svelte';
         <GameOver on:restart={restartGame} />
       {/if}
     {/if}
-    <footer>
-      <p>Proyecto para la Hackathon de OpenaI <a href="https://github.com/aastroza/carbonada">CARBONADA</a> </p>
-    </footer>
+
   </div>
 
 </main>
+<footer>
+  <p>Proyecto para la Hackathon de OpenaI <a href="https://github.com/aastroza/carbonada">CARBONADA</a> </p>
+</footer>
 
 <style>
   main {
     padding: 20px;
-    top: 20%;
+    margin-top: 8%;
     width: 60vw;
     height: 70vh;
-    position: absolute;
+    position: flex;
     background-color: rgba(212, 138, 0, 0.507); 
     border: 8px solid #000;
     box-shadow: 0 0 0 4px #fff, 0 0 0 8px #000;
@@ -85,13 +86,14 @@ import SearchItem from './SearchItem.svelte';
   }
 
   footer {
-    margin-top: auto;
+    text-align: center;
+    padding: 10px;
     font-size: 16px;
   }
 
   @media (max-width: 768px) {
     main {
-      height: 50vh;
+      height: 55vh;
     }
   }
 </style>

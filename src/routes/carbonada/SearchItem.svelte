@@ -32,10 +32,15 @@
       }
 
       const item: Item = await response.json();
-      currentItem.set(item);
-      placeItem(item);
-      console.log({ item })
-      searchQuery = '';
+      const currentCarbonadaItems = get(carbonada).map(i => i.product.toLowerCase())
+      if(currentCarbonadaItems.includes(item.product.toLowerCase())) {
+        alreadyExists = true
+      } else {
+        currentItem.set(item);
+        placeItem(item);
+        console.log({ item })
+        searchQuery = '';
+      }
       // Handle the search results as needed
     } catch (error) {
       console.error('Fetch error:', error);
@@ -47,6 +52,7 @@
   function handleKeyDown(event: KeyboardEvent) {
     alreadyExists = false
     if (event.key === 'Enter') {
+      if (!searchQuery) return
       const currentCarbonadaItems = get(carbonada).map(i => i.product.toLowerCase())
       if(currentCarbonadaItems.includes(searchQuery.toLowerCase())) {
         alreadyExists = true
@@ -131,6 +137,7 @@
        2px  2px 0 #fff;
     width: 100%;
     text-align: center;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.1rem;
+    margin-top: -10px;
   }
 </style>
