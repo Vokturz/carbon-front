@@ -1,14 +1,17 @@
 <script lang="ts">
     import { carbonada, gameState } from './stores';
     import { slide } from 'svelte/transition';
-    let isOpen = true;
+    let isOpen = false;
     let player = 1;
 </script>
 
 <div class="items-list-container">
-    <button class="toggle-button" on:click={() => isOpen = !isOpen}>
-        {isOpen ? '▼ Items list' : '▲ Items list'}
-    </button>
+    <div class="header">
+        <button class="toggle-button" on:click={() => isOpen = !isOpen}>
+            {isOpen ? '▼ Items list' : '▲ Items list'}
+        </button>
+
+    </div>
     {#if isOpen}
         <div class="items-dropped-list" transition:slide={{duration: 300, axis: "y"}}>
             <h4>Carbon footprint of dropped Items</h4>
@@ -33,12 +36,29 @@
         z-index: 1000;
     }
 
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
     .toggle-button {
-        width: 100%;
+        flex-grow: 1;
         background-color: #f0f0f0;
         border: none;
         padding: 10px;
         cursor: pointer;
+    }
+
+    .github-link {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+    }
+
+    .github-logo {
+        width: 24px;
+        height: 24px;
     }
 
     .items-dropped-list {
@@ -55,6 +75,7 @@
     .items-dropped-list h4 {
         margin-top: 0;
         margin-bottom: 10px;
+        font-size: 10px;
     }
 
     .items-dropped-list ul {
@@ -65,7 +86,7 @@
 
     .items-dropped-list li {
         margin-bottom: 5px;
-        font-size: 14px;
+        font-size: 10px;
     }
 
     @media (min-width: 768px) {

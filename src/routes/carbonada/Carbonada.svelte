@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { gameState } from './stores';
-	import { startGame, restartGame } from './carbonadaLogic';
-	import PlayerSelection from './PlayerSelection.svelte';
-	import CarbonadaDisplay from './CarbonadaDisplay.svelte';
-	import GameOver from './GameOver.svelte';
-	import ItemsList from './ItemsList.svelte';
-	import SearchItem from './SearchItem.svelte';
+import { gameState } from './stores';
+import { startGame, restartGame } from './carbonadaLogic';
+import PlayerSelection from './PlayerSelection.svelte';
+import CarbonadaDisplay from './CarbonadaDisplay.svelte';
+import GameOver from './GameOver.svelte';
+import ItemsList from './ItemsList.svelte';
+import SearchItem from './SearchItem.svelte';
 </script>
 
 <main>
@@ -23,12 +23,21 @@
       <GameOver on:restart={restartGame} />
     {/if}
   {/if}
+  <footer>
+    <p>OpenAI Hackathon Project <a href="https://github.com/aastroza/carbonada">carbonada</a> </p>
+  </footer>
 </main>
+
 
 <style>
   main {
     padding: 20px;
-    position: relative;
+    top: 20%;
+    width: 60vw;
+    position: absolute;
+    background-color: rgba(165, 42, 42, 0.8); 
+    border: 8px solid #000;
+    box-shadow: 0 0 0 4px #fff, 0 0 0 8px #000;
   }
 
   .player-info {
@@ -39,5 +48,19 @@
   p {
     position: relative;
     text-align: center;
+    color: white;
+    
+  }
+
+  a {
+		text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000, 
+    -2px -2px 0 #fff,  
+     2px -2px 0 #fff,
+    -2px  2px 0 #fff,
+     2px  2px 0 #fff;
   }
 </style>

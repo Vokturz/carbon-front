@@ -1,7 +1,5 @@
 <script>
 	import Carbonada from './carbonada/Carbonada.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
 </script>
 
 <svelte:head>
@@ -23,12 +21,14 @@
 </section>
 
 <style>
+
 	section {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
+		font-size: 80%;
 	}
 
 	/* h1 {

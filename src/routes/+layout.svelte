@@ -10,9 +10,9 @@
 		<slot />
 	</main>
 
-	<footer>
+	<!-- <footer>
 		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
+	</footer> -->
 </div>
 
 <style>
@@ -33,12 +33,23 @@
 		box-sizing: border-box;
 	}
 
-	footer {
+	/* footer {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		padding: 12px;
+		color: white;
+		text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000, 
+    -2px -2px 0 #fff,  
+     2px -2px 0 #fff,
+    -2px  2px 0 #fff,
+     2px  2px 0 #fff;
+
 	}
 
 	footer a {
@@ -49,5 +60,5 @@
 		footer {
 			padding: 12px 0;
 		}
-	}
+	} */
 </style>

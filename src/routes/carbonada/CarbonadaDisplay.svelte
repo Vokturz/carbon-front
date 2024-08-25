@@ -23,22 +23,24 @@
 
 <div class="carbonada-container">
     <div class="carbonada">
-        <div class="pot">
-            {#if items.length > 0}
-                {#each items as item}
-                    <div class="floating-item" 
-                         style="top: {getRandomPosition().top}; 
-                                left: {getRandomPosition().left}; 
-                                animation-delay: {getRandomDelay()}s;">
-                        {item.product}
-                    </div>
-                {/each}
-            {:else}
-                <p>No items in the pot</p>
-            {/if}
+        <div class="pot-container">
+            <div class="pot">
+                {#if items.length > 0}
+                    {#each items as item}
+                        <div class="floating-item" 
+                             style="top: {getRandomPosition().top}; 
+                                    left: {getRandomPosition().left}; 
+                                    animation-delay: {getRandomDelay()}s;">
+                            {item.product}
+                        </div>
+                    {/each}
+                {:else}
+                    <p>No items in the pot</p>
+                {/if}
+            </div>
+            <ProgressBar />
         </div>
     </div>
-    <ProgressBar />
 </div>
 
 <style>
@@ -52,7 +54,7 @@
 
     .carbonada {
         flex: 1;
-        overflow-x: auto;
+        overflow-x: hidden;
         display: flex;
         align-items: stretch;
         min-height: 200px;
@@ -63,11 +65,19 @@
         background-color: #c6dee7;
         border: 2px solid #a2b9cc;
         position: relative;
-        width: 500px;
-        height: 200px;
+        width: 30vw; /* Use viewport width for responsiveness */
+        max-width: 500px; /* Maximum width to prevent it from getting too large */
+        height: 40vh; /* Use viewport height for responsiveness */
+        max-height: 200px; /* Maximum height to prevent it from getting too large */
         color: #333;
         font-style: italic;
         overflow: hidden;
+    }
+
+    .pot-container {
+        position: relative;
+        display: flex;
+        align-items: center;
     }
 
     .floating-item {
@@ -75,6 +85,7 @@
         padding: 5px;
         background-color: rgba(255, 255, 255, 0.7);
         border-radius: 5px;
+        font-size: 1.4vw; 
         font-size: 14px;
         animation: float 5s ease-in-out infinite;
     }

@@ -15,12 +15,12 @@
 
     loading.set(true);
     try {
-      const response = await fetch('/api/mock', {
+      const response = await fetch('/api/mock', { //https://aastroza--carbonada-estimate.modal.run
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ product })
+        body: JSON.stringify({ product }),
       });
 
       if (!response.ok) {
@@ -30,6 +30,7 @@
       const item: Item = await response.json();
       currentItem.set(item);
       placeItem(item);
+      console.log({ item })
       searchQuery = '';
       // Handle the search results as needed
     } catch (error) {
@@ -42,8 +43,8 @@
   function handleKeyDown(event: KeyboardEvent) {
     alreadyExists = false
     if (event.key === 'Enter') {
-      const currentCarbonadaItems = get(carbonada).map(i => i.product)
-      if(currentCarbonadaItems.includes(searchQuery)) {
+      const currentCarbonadaItems = get(carbonada).map(i => i.product.toLowerCase())
+      if(currentCarbonadaItems.includes(searchQuery.toLowerCase())) {
         alreadyExists = true
       } else {
         fetchSearchResults(searchQuery);

@@ -22,7 +22,7 @@ function getProgressColor(value: number) {
 </script>
 
 <div class="progress-container">
-    <p>{$gameState.maxCO2e.toFixed(2)}</p>
+    <p>{$gameState.currentCO2e.toFixed(2)}</p>
     <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
     <p class="legend">CO2e</p>
 </div>
@@ -30,13 +30,14 @@ function getProgressColor(value: number) {
 <style>
     .progress-container {
         position: absolute;
-        right: -50px;
-        top: 0;
+        right: -80px;
+        top: -20px;
         bottom: 0;
         width: 30px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        image-rendering: pixelated; /* Ensures pixelated rendering */
     }
 
     .progress-container p {
@@ -44,33 +45,37 @@ function getProgressColor(value: number) {
         padding: 5px;
         text-align: center;
         font-size: 16px;
+        z-index: 100;
     }
 
     .progress-container progress {
         width: 100%;
+        height: 200px;
         -webkit-appearance: none;
         appearance: none;
         writing-mode: vertical-lr; 
         transform: rotate(180deg); 
+        background-color: #f0f0f0;
+        border: 2px solid #000; /* Pixelated border */
     }
   
     /* Webkit styles for the progress bar */
     .progress-container progress::-webkit-progress-bar {
         background-color: #f0f0f0;
-        border-radius: 10px;
+        border: 2px solid #000; /* Pixelated border */
     }
   
     .progress-container progress::-webkit-progress-value {
-        border-radius: 10px;
         background-color: var(--progress-color);
-        transition: all 0.4s ease;
+        transition: none; /* Remove smooth transition */
+        border: 2px solid #000; /* Pixelated border */
     }
   
     /* Firefox styles for the progress bar */
     .progress-container progress::-moz-progress-bar {
-        border-radius: 10px;
         background-color: var(--progress-color);
-        transition: all 0.4s ease;
+        transition: none; /* Remove smooth transition */
+        border: 2px solid #000; /* Pixelated border */
     }
   
     .progress-container .legend {

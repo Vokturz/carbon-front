@@ -11,7 +11,7 @@ export function startGame(event: CustomEvent) {
     over: false,
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0),
-    maxCO2e: 1000,
+    maxCO2e: 500,
     currentCO2e: 0
   });
   currentItem.set(null);
