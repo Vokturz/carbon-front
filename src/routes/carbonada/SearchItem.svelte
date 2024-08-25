@@ -19,7 +19,7 @@
 
     loading.set(true);
     try {
-      const response = await fetch('/api/mock', { //https://aastroza--carbonada-estimate.modal.run
+      const response = await fetch('https://aastroza--carbonada-estimate.modal.run', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -36,7 +36,7 @@
                 {@const playerIndex = Math.floor(index  %  $gameState.playerScores.length)}
                     <li>
                         <img src={categoryMap[item.category]} alt={item.category} class="category-icon">
-                        <span>(Jugador {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(2)}</span>
+                        <span>(Jugador {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(1)} kg CO2e</span>
                     </li>
                 {/each}
             </ul>
@@ -76,6 +76,7 @@
         background-color: #f9f9f9;
         border-bottom: 1px solid #ddd;
         overflow-y: auto;
+        padding: 10px;
     }
 
     .items-dropped-list h4 {

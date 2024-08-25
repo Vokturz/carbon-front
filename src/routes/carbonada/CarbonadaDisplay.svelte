@@ -98,7 +98,6 @@
         color: #333;
         font-style: italic;
         overflow: hidden;
-        background-color: #333;
         margin-top: 60%;
     }
 
