@@ -11,7 +11,7 @@ export function startGame(event: CustomEvent) {
     over: false,
     currentPlayerTurn: 1,
     playerScores: Array(numberOfPlayers).fill(0),
-    maxCO2e: 500,
+    maxCO2e: 100,
     currentCO2e: 0
   });
   currentItem.set(null);
@@ -33,7 +33,6 @@ export function placeItem(item: Item) {
     return state;
   });
   progress.set(Math.min(currentGameState.currentCO2e / currentGameState.maxCO2e, 100))
-  currentItem.set(null);
   carbonada.update(tl => [...tl, item]);
   if (!isCorrectPlacement) {
     gameState.update(state => ({ ...state, over: true }));

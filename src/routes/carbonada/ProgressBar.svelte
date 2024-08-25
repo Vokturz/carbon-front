@@ -22,17 +22,17 @@ function getProgressColor(value: number) {
 </script>
 
 <div class="progress-container">
-    <p>{$gameState.currentCO2e.toFixed(2)}</p>
+    <p>max {$gameState.maxCO2e.toFixed(0)}</p>
     <progress value={$tweenedProgress} max="1" style="--progress-color: {progressColor};"></progress>
-    <p class="legend">CO2e</p>
+    <p class="legend">kg CO2e</p>
 </div>
 
 <style>
    .progress-container {
         position: fixed;
-        right: -120px; /* Adjusted from -80px to -60px */
+        right: -120px;
         top: 50%; /* Center vertically */
-        transform: translateY(-50%); /* Adjust for exact vertical centering */
+        transform: translateY(-50%);
         width: 30px;
         display: flex;
         flex-direction: column;
@@ -47,6 +47,11 @@ function getProgressColor(value: number) {
         font-size: 16px;
         z-index: 100;
         color: white;
+        text-shadow: 
+            -1px -1px 0 #000,  
+            1px -1px 0 #000,
+            -1px  1px 0 #000,
+            1px  1px 0 #000;
     }
 
     .progress-container progress {
@@ -57,26 +62,26 @@ function getProgressColor(value: number) {
         writing-mode: vertical-lr; 
         transform: rotate(180deg); 
         background-color: #f0f0f0;
-        border: 2px solid #000; /* Pixelated border */
+        border: 2px solid #000;
     }
   
     /* Webkit styles for the progress bar */
     .progress-container progress::-webkit-progress-bar {
         background-color: #f0f0f0;
-        border: 2px solid #000; /* Pixelated border */
+        border: 2px solid #000;
     }
   
     .progress-container progress::-webkit-progress-value {
         background-color: var(--progress-color);
-        transition: none; /* Remove smooth transition */
-        border: 2px solid #000; /* Pixelated border */
+        transition: none;
+        border: 2px solid #000;
     }
   
     /* Firefox styles for the progress bar */
     .progress-container progress::-moz-progress-bar {
         background-color: var(--progress-color);
-        transition: none; /* Remove smooth transition */
-        border: 2px solid #000; /* Pixelated border */
+        transition: none;
+        border: 2px solid #000;
     }
   
     .progress-container .legend {
@@ -88,6 +93,7 @@ function getProgressColor(value: number) {
         position: absolute;
         top: 30%;
         white-space: nowrap;
+        right: -20px;
     }
 
     @media (max-width: 768px) {

@@ -60,16 +60,16 @@
 
 <div class="search-container">
   {#if alreadyExists}
-    <p class="error">This item is already in the Carbonada</p>
+    <p class="error">El item ya está en la Carbonada</p>
   {/if}
   <div class="search-bar">
     {#if $loading}
-      <div class="loading-indicator">Loading...</div>
+      <div class="loading-indicator">Cargando...</div>
     {:else}
       <img src={searchIcon} alt="Search" class="icon" />
       <input
         type="text"
-        placeholder="Search for a item..."
+        placeholder="Busca un item..."
         on:input={handleSearch}
         on:keydown={handleKeyDown}
         bind:value={searchQuery}

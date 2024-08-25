@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { gameState } from './stores';
+  import { gameState, currentItem } from './stores';
   const dispatch = createEventDispatcher();
 
   let exceeededCO2e = $gameState.currentCO2e - $gameState.maxCO2e;
@@ -8,9 +8,12 @@
 
 <div class="modal-overlay">
   <div class="modal-content">
-    <h2>Game Over!</h2>
-    <p>You have exceeded the CO2e limit by {exceeededCO2e.toFixed(2)} </p>
-    <button on:click={() => dispatch('restart')}>Restart</button>
+    <h2>HAS PERDIDO!</h2>
+    {#if $currentItem}
+      <p> Último item <b>{$currentItem.product}</b> ({$currentItem.carbon_footprint.toFixed(1)} kg CO2e) </p>
+    {/if}
+    <p>Has excedido el límite de kg CO2e por  {exceeededCO2e.toFixed(1)} </p>
+    <button class="pixel-button" on:click={() => dispatch('restart')}>Reiniciar</button>
   </div>
 </div>
 
@@ -35,16 +38,22 @@
     text-align: center;
   }
 
-  button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: #45a049;
+  .pixel-button {
+      background-color: #4CAF50;
+      border: 4px solid #2E7D32;
+      color: white;
+      padding: 10px 24px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      box-shadow: 0 4px #1B5E20;
+      transition: all 0.1s ease-in-out;
+    }
+  .pixel-button:active {
+    box-shadow: 0 2px #1B5E20;
+    transform: translateY(2px);
   }
 </style>

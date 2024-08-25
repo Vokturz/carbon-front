@@ -24,19 +24,19 @@
 <div class="items-list-container">
     <div class="header">
         <button class="toggle-button" on:click={() => isOpen = !isOpen}>
-            {isOpen ? '▼ Items list' : '▲ Items list'}
+            {isOpen ? '▼ Lista de items' : '▲ Lista de items'}
         </button>
 
     </div>
     {#if isOpen}
         <div class="items-dropped-list" transition:slide={{duration: 300, axis: "y"}}>
-            <h4>Carbon footprint of dropped Items</h4>
+            <h4>Huella de carbono en kg CO2e</h4>
             <ul>
                 {#each $carbonada as item, index (item.product)}
                 {@const playerIndex = Math.floor(index  %  $gameState.playerScores.length)}
                     <li>
                         <img src={categoryMap[item.category]} alt={item.category} class="category-icon">
-                        <span>(Player {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(2)} CO2e</span>
+                        <span>(Jugador {playerIndex + 1})<br><b>{item.product}</b>: {item.carbon_footprint.toFixed(2)}</span>
                     </li>
                 {/each}
             </ul>

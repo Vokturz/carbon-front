@@ -12,7 +12,7 @@ import SearchItem from './SearchItem.svelte';
   {#if !$gameState.started}
     <PlayerSelection on:start={startGame} />
   {:else}
-    <p style="color: #03A61C;">Current Player: {$gameState.currentPlayerTurn}</p>
+    <p style="color: #03A61C;">Jugar Actual: {$gameState.currentPlayerTurn}</p>
     <ItemsList />
     <SearchItem />
     <CarbonadaDisplay />
@@ -24,7 +24,7 @@ import SearchItem from './SearchItem.svelte';
     {/if}
   {/if}
   <footer>
-    <p>OpenAI Hackathon Project <a href="https://github.com/aastroza/carbonada">carbonada</a> </p>
+    <p>Proyecto para la Hackathon de OpenaI <a href="https://github.com/aastroza/carbonada">CARBONADA</a> </p>
   </footer>
 </main>
 
@@ -34,6 +34,7 @@ import SearchItem from './SearchItem.svelte';
     padding: 20px;
     top: 20%;
     width: 60vw;
+    height: 70vh;
     position: absolute;
     background-color: rgba(212, 138, 0, 0.507); 
     border: 8px solid #000;
@@ -76,5 +77,14 @@ import SearchItem from './SearchItem.svelte';
 
   footer {
     font-size: 16px;
+    margin-top: 2rem;
   }
+
+  @media (max-width: 768px) {
+        main {
+          height: 50vh;
+        }
+    }
+
+  
 </style>
