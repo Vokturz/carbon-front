@@ -79,9 +79,8 @@ function getProgressColor(value: number) {
 
     .current-value {
         position: absolute;
-        left: 100%;
+        left: 0%;
         transform: translateX(5px);
-        white-space: nowrap;
     }
   
     /* Webkit styles for the progress bar */
